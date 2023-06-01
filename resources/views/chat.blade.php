@@ -4,6 +4,7 @@
     <title>Chat Application</title>
 </head>
 <body>
+@include('partials._navbar')
     <h1>Chat</h1>
     
     <div id="messages">
