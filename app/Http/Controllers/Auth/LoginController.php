@@ -23,6 +23,6 @@ class LoginController extends Controller
     {
         // Custom logic to perform after successful login
         // For example, redirecting to a specific page
-        return redirect('/dashboard');
+        return redirect('/chat');
     }
 }

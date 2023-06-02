@@ -44,6 +44,6 @@ class RegisterController extends Controller
     {
         // Custom logic to perform after successful registration
         // For example, redirecting to a specific page
-        return redirect('/dashboard');
+        return redirect('/chat');
     }
 }

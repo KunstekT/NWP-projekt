@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Log In</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
+@extends('layouts.app')
 
-<body>
-@include('partials._navbar')
-    <div class="container">
+@section('content')
         <h1>Log In</h1>
 
         <form method="POST" action="{{ route('login') }}">
@@ -46,5 +39,4 @@
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
-</body>
-</html>
+@endsection
