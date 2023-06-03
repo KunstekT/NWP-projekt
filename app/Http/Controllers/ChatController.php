@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ChatMessage;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class ChatController extends Controller
 { 
-    public $_senderId = -1;    
-    public $_receiverId = -1;    
 
     public function index()
     {
@@ -23,6 +22,11 @@ class ChatController extends Controller
     {            
         $users = User::all();
         $messages = ChatMessage::all();
+
+        $friendshipsController = new FriendshipsController();
+        $friendshipsController->refreshFriends(Auth::id());
+        $friendshipsController->refreshUsersToAdd(Auth::id());
+
         return view('chat', ['users' => $users, 'messages' => $messages]);
     }
 

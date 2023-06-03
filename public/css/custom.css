@@ -1,0 +1,11 @@
+a.nav-link.active {
+    background-color: #3B5998;
+    font-weight: bold;
+    border-radius: 0.25rem;
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link.show {
+    color: white !important;
+    /* Be cautious when using the !important declaration, as it can lead to specificity conflicts and make your styles harder to maintain. 
+    It's generally recommended to use more specific selectors or adjust the order of your CSS rules to avoid relying heavily on !important. */
+}

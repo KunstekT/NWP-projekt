@@ -1,16 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Friends List</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="container">
+                <h1>Friends List</h1>
+            </div>
 
-    <ul>
-        @forelse($friends as $friend)
-            <li>{{ $friend->name }}</li>
-            <a href="{{ route('removeFriend', ['userId' => Auth::id(), 'friendId' => $friend->id ]) }}">Remove friend</a>
-        @empty
-            <li>No friends found</li>
-        @endforelse
-    </ul>
 
-    <a href="{{ route('findFriends', ['userId' => Auth::id()]) }}">Find new friends</a>
+            @forelse($friends as $friend)
+                <div class="list-group">
+                    <li class="list-group-item">{{ $friend->name }}
+                        <a class="btn btn-danger" href="{{ route('removeFriend', ['userId' => Auth::id(), 'friendId' => $friend->id ]) }}" title="Remove {{$friend->name}} from your friends list">Unfriend</a>
+                    </li>
+                </div>
+
+                @empty
+                <li class="list-group-item">No friends found</li>
+            @endforelse
+            <br>        
+            <div class="container">
+                <a class="btn btn-primary" href="{{ route('findFriends', ['userId' => Auth::id()]) }}">Find new friends</a>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

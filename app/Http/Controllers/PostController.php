@@ -8,6 +8,26 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index()
+    {
+        return view('posts');
+    }
+
     public function create(Request $request)
     {
         $user = Auth::user();
@@ -18,11 +38,16 @@ class PostController extends Controller
         $post->content = $content;
         $post->save();
     
-        return redirect('/wall');
+        return redirect('/posts');
     }
 
-    public function wall(){
+    public function posts(){        
+
+        $friendshipsController = new FriendshipsController();
+        $friendshipsController->refreshFriends(Auth::id());
+        $friendshipsController->refreshUsersToAdd(Auth::id());
+
         $posts = Post::with('user')->get();
-        return view('wall', compact('posts'));
+        return view('posts', compact('posts'));
     }
 }

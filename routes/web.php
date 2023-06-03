@@ -35,7 +35,7 @@ Route::post('/register', 'App\Http\Controllers\Auth\RegisterController@register'
 
 Route::get('/chat', 'App\Http\Controllers\ChatController@chat')->name('chat');
 
-Route::post('/getChatWithAUser/{sender_id}/{receiver_id}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('getChatWithAUser');
+//Route::post('/getChatWithAUser/{sender_id}/{receiver_id}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('getChatWithAUser');
 Route::get('/getChatWithAUser/{sender_id}/{receiver_id}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('getChatWithAUser');
 
 Route::post('/chat/send/{senderId}/{receiverId}', 'App\Http\Controllers\ChatController@send');
@@ -47,5 +47,10 @@ Route::get('/addFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsCo
 Route::get('/removeFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@removeFriend')->name('removeFriend');
 
 Route::post('/post/create', 'App\Http\Controllers\PostController@create')->name('post.create');
-Route::get('/wall', 'App\Http\Controllers\PostController@wall')->name('wall');
+Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts');
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/posts', [App\Http\Controllers\PostController::class, 'posts'])->name('posts');
