@@ -1,3 +1,15 @@
+@php
+function userIsAFriend($userId) {
+        $friends = session('friends', []);
+        foreach (session('friends', []) as $friend) {
+            if ($friend->id === $userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -7,16 +19,18 @@
     <ul>
         @foreach ($users as $user)
             @if ($user->id !== Auth::id())
-                <li>User ID: {{ $user->id }}</li>
-                <li>Name: {{ $user->name }}</li>
-                <li>Email: {{ $user->email }}</li>
+                @if(userIsAFriend($user->id))
+                    <li>User ID: {{ $user->id }}</li>
+                    <li>Name: {{ $user->name }}</li>
+                    <li>Email: {{ $user->email }}</li>
 
-            <form method="POST" action="{{ route('getChatWithAUser', ['sender_id' => Auth::id(), 'receiver_id' => $user->id]) }}">
-                @csrf
-                <button type="submit">Chat!</button>
-            </form>
-                
-                <br>
+                <form method="POST" action="{{ route('getChatWithAUser', ['sender_id' => Auth::id(), 'receiver_id' => $user->id]) }}">
+                    @csrf
+                    <button type="submit">Chat!</button>
+                </form>
+                    
+                    <br>
+                @endif
             @endif
         @endforeach
     </ul>

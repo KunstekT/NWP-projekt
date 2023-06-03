@@ -16,7 +16,7 @@ class FriendshipsController extends Controller
         return view('friends-list', ['friends' => session('friends')]);
     }
 
-    private function refreshFriends($userId){
+    public function refreshFriends($userId){
         session()->forget('friends');
         $friendship = new Friendship();
         $friendsIDs = $friendship->getFriendsIDs($userId);
@@ -31,7 +31,7 @@ class FriendshipsController extends Controller
         }
         session(['friends' => $friends]);  
     }
-    private function refreshUsersToAdd($userId){
+    public function refreshUsersToAdd($userId){
         session()->forget('usersToAdd');
         $friendsIDs = array(); // array to hold ids of all friends
 
@@ -87,6 +87,7 @@ class FriendshipsController extends Controller
 
         Friendship::makeFriends($user, $friend);
 
+        $this->refreshFriends($userId);
         $this->refreshUsersToAdd($userId);
         // return response()->json(['message' => 'Friend added successfully'], 200);
         return view('addUsers', ['usersToAdd' => session('usersToAdd')]);
@@ -102,7 +103,9 @@ class FriendshipsController extends Controller
         }
 
         Friendship::removeFriendship($user, $friend);
+
         $this->refreshFriends($userId);
+        $this->refreshUsersToAdd($userId);
 
         // return response()->json(['message' => 'Friend removed successfully'], 200);
         return view('friends-list', ['friends' => session('friends')]);

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FriendshipsController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,10 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         // Custom logic to perform after successful login
-        // For example, redirecting to a specific page
-        return redirect('/chat');
+        $friendshipsController = new FriendshipsController();
+        $friendshipsController->refreshFriends($user->id);
+        $friendshipsController->refreshUsersToAdd($user->id);
+
+        return redirect('/wall');
     }
 }

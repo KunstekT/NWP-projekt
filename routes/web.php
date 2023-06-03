@@ -18,6 +18,7 @@ use app\Http\Controllers\Auth\RegisterController;
 use app\Http\Controllers\Auth\LogoutController;
 use app\Http\Controllers\FriendshipsController;
 use app\Http\Controllers\ChatController;
+use app\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('home');
@@ -45,4 +46,6 @@ Route::get('/findFriends/{userId}', 'App\Http\Controllers\FriendshipsController@
 Route::get('/addFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@addFriend')->name('addFriend');
 Route::get('/removeFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@removeFriend')->name('removeFriend');
 
+Route::post('/post/create', 'App\Http\Controllers\PostController@create')->name('post.create');
+Route::get('/wall', 'App\Http\Controllers\PostController@wall')->name('wall');
 

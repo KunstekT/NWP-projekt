@@ -19,10 +19,13 @@
             <a class="navbar-brand" href="{{ route('home') }}">MCP NAVBAR! (MCP = "Mini chat project", yes, rename me... im in 'app.blade.php')</a>
             <ul class="navbar-nav">
                 <!-- Add more menu items as needed -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('chat') }}">Chat ...Add other links here when logged in like, friends list, chat (this button moves to chat) etc.</a>               
-                </li>
                 @auth
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('wall') }}">Wall</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('chat') }}">Chat</a>               
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('friends', ['userId' => Auth::id()]) }}">Friends</a>
                     </li>
