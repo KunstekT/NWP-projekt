@@ -46,8 +46,6 @@ class FriendshipsController extends Controller
 
         foreach($users as $user){
 
-            // error_log("userId! ");
-            // error_log($userId);
             if($user->id == $userId){
 
             }

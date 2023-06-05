@@ -67,11 +67,8 @@ class Friendship extends Model
         $friendsIDs = array();
         
         foreach($friends as $friend){
-            error_log($userId);
-            error_log($friend->friend_id);
             if($userId == $friend->user_id){
                 array_push($friendsIDs, $friend->friend_id);
-                error_log($friend->friend_id);
             }
         }
                 

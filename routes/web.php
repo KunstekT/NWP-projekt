@@ -52,6 +52,8 @@ Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts')
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/posts', [App\Http\Controllers\PostController::class, 'posts'])->name('posts');
-Route::post('/posts/{postId}/like', [PostController::class, 'toggleLike'])->name('posts.like');
+Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
+Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts');
+Route::post('/posts/{postId}/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
+Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
+Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');

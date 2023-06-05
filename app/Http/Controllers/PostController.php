@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Like;
+use App\Models\Comment;
 
 class PostController extends Controller
 {
@@ -26,7 +27,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts');
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        return view('posts', ['posts' => $posts]);
     }
 
     public function create(Request $request)
@@ -42,6 +44,19 @@ class PostController extends Controller
         return redirect('/posts');
     }
 
+    public function deletePost($postId)
+{
+    $post = Post::findOrFail($postId);
+
+    // Delete the post
+    $post->delete();
+
+    // Optionally, delete associated comments
+    $post->comments()->delete();
+
+    $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    return redirect()->route('posts')->with('success', 'Post deleted successfully.');
+}
     public function posts(){        
 
         $friendshipsController = new FriendshipsController();
@@ -49,32 +64,43 @@ class PostController extends Controller
         $friendshipsController->refreshUsersToAdd(Auth::id());
 
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        return view('posts', compact('posts'));
+        return view('posts', ['posts' => $posts]);
     }
 
     public function toggleLike(Request $request, $postId)
-{
-    $user = $request->user(); // Retrieve the authenticated user
-    $post = Post::findOrFail($postId); // Retrieve the post
+    {
+        $user = $request->user(); // Retrieve the authenticated user
+        // $post = $request->post();
+        // $post = Post::findOrFail($postId); // Retrieve the post
 
-    // Check if the user has already liked the post
-    $existingLike = Like::where('user_id', $user->id)
-        ->where('post_id', $post->id)
-        ->first();
+        // Check if the user has already liked the post
+        $existingLike = Like::where('user_id', $user->id)
+            ->where('post_id', $postId)
+            ->first();
 
-    if ($existingLike) {
-        // User already liked the post, so unlike it
-        $existingLike->delete();
-        $liked = false;
-    } else {
-        // User hasn't liked the post, so create a new like
-        Like::create([
-            'user_id' => $user->id,
-            'post_id' => $post->id,
-        ]);
-        $liked = true;
+        if ($existingLike) {
+            // User already liked the post, so unlike it
+            $existingLike->delete();
+            $liked = false;
+        } else {
+            // User hasn't liked the post, so create a new like
+            Like::create([
+                'user_id' => $user->id,
+                'post_id' => $postId,
+            ]);
+            $liked = true;
+        }
+
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        // return response()->json(['liked' => $liked]);
+        return view('posts', ['posts' => $posts]);
     }
 
-    return response()->json(['liked' => $liked]);
-}
+    public function showComments($postId){
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        $postWithOpenedCommentsId = $postId;
+        $comments = Comment::where('post_id', $postId)->get();
+        
+        return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments]);
+    }
 }
