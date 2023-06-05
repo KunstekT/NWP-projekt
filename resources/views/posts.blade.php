@@ -55,6 +55,9 @@
                                 <strong>{{ $post->user->name }}</strong> 
                                 <p> {{ $post->content }}</p>
                                 {{ formatTimeAgo($post->created_at) }}
+                                <button class="btn btn-primary" data-post-id="{{ $post->id }}" onclick="toggleLike(this)">
+                                    {{ $post->likes()->count() }} Likes
+                                </button>
                             
                         </div>
                     @endif  

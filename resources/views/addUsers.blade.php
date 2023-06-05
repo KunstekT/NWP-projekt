@@ -14,7 +14,7 @@
                     <a class="btn btn-primary" href="{{ route('addFriend', ['userId' => Auth::id(), 'friendId' =>$userToAdd->id ]) }}" >Add</a>
                     </li>
                 @empty
-                    <li>Everyone is your friend! What a popular person you are!</li>
+                    <li class="list-group-item">Everyone is your friend! What a popular person you are!</li>
                 @endforelse
             </div>
 
