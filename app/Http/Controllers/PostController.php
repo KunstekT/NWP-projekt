@@ -32,11 +32,68 @@ class PostController extends Controller
     //     return view('posts', ['posts' => $posts]);
     // }
 
+    /*public function replaceUserNames($body)
+    {/*
+        if($user_ids != null){
+            preg_match_all('/@(\w+)/', $body, $users);
+
+            foreach($user_ids as $user_id){
+                $linkedUserList = User::find($user_id);
+                $body = str_replace('@' . $linkedUserList->name, 
+                    '<a href="/profile/' . $linkedUserList->id . '</a>', $body);
+            }
+            return $body;
+        }
+        else return $body;
+
+        preg_match_all('/@(\w+)/', $body, $users);
+        if (!isSet($users[1])) {
+            return $body;
+        }
+        $userList = Users::select('select name from users');
+        foreach ($userList as $user) {
+            $replace = $user->name;
+                if($user->id !== auth()->id()) {
+                    $replace = $user->id;
+                }
+                $body = str_replace('@' . $user->name, '<a href="/profile/' . $replace . '">@' . $user->name . '</a>', $body);
+        }
+        return $body;
+    }*/
+
+    function getMentions($content)
+    {
+        $json = 'users.json';
+        $array = json_decode($json, true);
+
+        $mention_regex = '/@(\w+)/'; //mention regrex to get all @texts
+
+        if (preg_match_all($mention_regex, $content, $matches))
+        {
+            foreach ($matches[1] as $match)
+            {/*
+                foreach($array AS $index => $element) {
+                    if($element['name'] == $match) {
+                        $id = $element['id'];
+                    }
+                }*/
+
+                $match_search = '@[' . $match . ']';
+                $match_replace = '<a target="_blank" href="/profile/' . $id . '">@' . $match_user['user_name'] . '</a>';
+
+                $content = str_replace('Tester4', "http://test.com/test/", $content);
+            }
+        }
+        return $content;    
+    }
+
     public function create(Request $request)
     {
         $user = Auth::user();
         $content = $request->input('content');
-    
+       // $content = $this->replaceUserNames($content);
+        $content = $this->getMentions($content);
+        $content = preg_replace('/(\w+)/', htmlspecialchars("<a href='/profile/4'> Test</a>"), $content);
         $post = new Post();
         $post->user_id = $user->id;
         $post->content = $content;
@@ -60,7 +117,7 @@ class PostController extends Controller
         $friendshipsController->refreshFriends(Auth::id());
         $friendshipsController->refreshUsersToAdd(Auth::id());
         $friendshipsController->saveFriendsJSON(Auth::id());
-        
+
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
         return view('posts', ['posts' => $posts]);
     }

@@ -28,7 +28,7 @@
         }
         return false;
     }
-
+    
 @endphp
 <!-- <script>
     function toggleLike(button) {
