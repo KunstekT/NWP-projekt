@@ -25,11 +25,16 @@ function userIsAFriend($userId) {
                     @if ($user->id !== Auth::id())
                         @if(userIsAFriend($user->id))
                             <div class="card" style="width: 36rem;">
-                            <div class="card-body">
-                                <p class="card-text">{{ $user->name }} ({{ $user->email }}) 
-                                <a href="{{ route('getChatWithAUser', ['sender_id' => Auth::id(), 'receiver_id' => $user->id]) }}" class="btn btn-primary stretched-link">Chat</a>
-                                </p>
-                            </div>
+                                <div class="card-body">  
+                                    @if ($user->profile_image)
+                                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/' . $user->profile_image) }}" alt="Profile Image">
+                                    @else
+                                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/default.png') }}" alt="Default Image">
+                                    @endif                                 
+                                    
+                                    <a href="{{ route('chat.with', ['sender_id' => Auth::id(), 'receiver_id' => $user->id]) }}" style="text-decoration:none;"><strong style="font-size:22px">{{ $user->name }} </strong></a>
+
+                                </div>   
                             </div>                     
                         @endif
                     @endif
@@ -47,7 +52,7 @@ function userIsAFriend($userId) {
                 @if (isset($data))
 
                     <div class="container" id="dataContainer">
-                        <h2>Chat with {{$receiverUsername }}:</h2>
+                        <h2>Chat with <a href="" style="text-decoration:none;">{{$receiverUsername }}</a>:</h2>
                         <ul class="list-group">
                             @foreach ($data as $item)
                                 @if ($item->sender_id == Auth::id())

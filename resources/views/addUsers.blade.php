@@ -10,7 +10,13 @@
 
             <div class="list-group">
                 @forelse($usersToAdd as $userToAdd)
-                    <li class="list-group-item">{{ $userToAdd->name }}
+                    <li class="list-group-item">
+                    @if ($userToAdd->profile_image)
+                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/' . $userToAdd->profile_image) }}" alt="Profile Image">
+                    @else
+                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/default.png') }}" alt="Default Image">
+                    @endif                                 
+                        <a href="{{ route('profile', ['userId'=> $userToAdd->id]) }}" style="text-decoration:none;"><strong style="font-size:22px">{{ $userToAdd->name }}</strong></a>
                     <a class="btn btn-primary" href="{{ route('addFriend', ['userId' => Auth::id(), 'friendId' =>$userToAdd->id ]) }}" >Add</a>
                     </li>
                 @empty

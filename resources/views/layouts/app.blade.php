@@ -39,6 +39,9 @@
                         <a class="nav-link {{ Request::is('posts') ? 'active' : '' }}" href="{{ route('posts') }}">Posts</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile', ['userId' => Auth::id()]) }}">Profile</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ Request::is('chat') ? 'active' : '' }}" href="{{ route('chat') }}">Chat</a>               
                     </li>
                     <li class="nav-item">

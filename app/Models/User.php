@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_image',
     ];
 
     /**
@@ -46,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    public function profileImage()
+{
+    return $this->hasOne(ProfileImage::class);
+}
 }

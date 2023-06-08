@@ -67,8 +67,16 @@
                     @if($post->user_id == Auth::id() || userIsAFriend($post->user_id))
                         <div class="card">
                             <div class="row">
-                                <div class="col-md-6 mx-auto">                                    
-                                    <strong style="font-size:22px">{{ $post->user->name }}</strong> 
+                            @php
+                                $user = \App\Models\User::find($post->user_id);
+                            @endphp
+                                <div class="col-md-6 mx-auto">   
+                                @if ($user->profile_image)
+                                    <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/' . $user->profile_image) }}" alt="Profile Image">
+                                @else
+                                    <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/default.png') }}" alt="Default Image">
+                                @endif                                 
+                                    <a href="{{ route('profile', ['userId'=> $post->user_id]) }}" style="text-decoration:none;"><strong style="font-size:22px">{{ $post->user->name }}</strong></a>
                                 </div>
                                 <div class="col-md-6 ms-auto">
                                 @if($post->user_id == Auth::id())
@@ -77,11 +85,15 @@
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">Delete Post</button>
                                     </form>
+                                    <a href="{{ route('posts.edit', ['postId' => $post->id]) }}" class="btn btn-primary float-end">Edit Post</a>
+                                    
                                 @endif
                                 </div>
                             </div>
                             
                             <p> {{ $post->content }}</p>
+
+
                             {{ formatTimeAgo($post->created_at) }}<br>
                             Likes: {{ $post->likes()->count() }}, Comments: {{ $post->comments()->count() }}
 
@@ -103,22 +115,29 @@
 
                                 @isset($postWithOpenedCommentsId)                                                       
                                     @if($postWithOpenedCommentsId == $post->id)
+                                    <br>
                                     <div class="card">     
-                                        Comments:    
-                                        @forelse($comments as $comment)
-                                                <!-- Check if comment belongs to the current post -->
-                                            
-                                            @if ($comment->post_id === $post->id)
-                                                <p>{{ $comment->user_id }}: {{ $comment->content }}</p>
-                                            @endif
-                                        @empty
-                                        <p> Be the first one to comment!</p>
-                                        @endforelse
+                                        @foreach ($userCommentPairs as $pair)
+                                        <div class="card">
+                                            <p><strong>{{ $pair['user']->name }}:</strong> {{ $pair['comment']->content }}</p>
+                                            {{ formatTimeAgo($pair['comment']->created_at) }}
+                                        </div>
+                                        @endforeach
                                     </div>
+                                    <form method="POST" action="{{ route('postComment', ['postId' => $post->id]) }}">
+                                        @csrf
+
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                                    </form>
                                     @endif
                                 @endisset
                         </div>
                     @endif  
+                    <br><br>
                 @empty
                     <li>No posts</li>
                 @endforelse

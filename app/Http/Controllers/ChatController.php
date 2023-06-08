@@ -57,7 +57,8 @@ class ChatController extends Controller
         // $message->message = $request->input('message');
         // $message->save();
 
-        return redirect()->route('getChatWithAUser', ['sender_id' => $sender, 'receiver_id' => $receiver]);
+        return redirect()->route('chat', ['sender_id' => $sender, 'receiver_id' => $receiver]);
+        
 
     }
 

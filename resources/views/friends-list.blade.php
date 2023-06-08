@@ -11,7 +11,15 @@
 
             @forelse($friends as $friend)
                 <div class="list-group">
-                    <li class="list-group-item">{{ $friend->name }}
+                    <li class="list-group-item">
+                        
+                    @if ($friend->profile_image)
+                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/' . $friend->profile_image) }}" alt="Profile Image">
+                    @else
+                        <img id="profileImage" class="img-thumbnail mx-auto" style="width:50px;height:50px" src="{{ asset('storage/profile_images/default.png') }}" alt="Default Image">
+                    @endif                                 
+                        <a href="{{ route('profile', ['userId'=> $friend->id]) }}" style="text-decoration:none;"><strong style="font-size:22px">{{ $friend->name }}</strong></a>
+                    
                         <a class="btn btn-danger" href="{{ route('removeFriend', ['userId' => Auth::id(), 'friendId' => $friend->id ]) }}" title="Remove {{$friend->name}} from your friends list">Unfriend</a>
                     </li>
                 </div>
