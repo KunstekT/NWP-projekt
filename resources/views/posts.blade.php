@@ -28,7 +28,7 @@
         }
         return false;
     }
-    
+
 @endphp
 <!-- <script>
     function toggleLike(button) {
@@ -55,7 +55,7 @@
             <p>What's on your mind?</p>
             <form method="POST" action="{{ route('post.create') }}">
                 @csrf
-                <textarea class="mention form-control" name="content"></textarea>
+                <textarea class=" form-control" name="content"></textarea>
                 <br>
                 <div class="row justify-content-center">
                     <button class="postMention btn btn-primary" type="submit">Post</button>
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                             
-                            <p> {{ $post->content }}</p>
+                            <p> @php echo $post->content @endphp</p>
 
 
                             {{ formatTimeAgo($post->created_at) }}<br>
