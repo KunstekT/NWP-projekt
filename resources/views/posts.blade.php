@@ -29,6 +29,11 @@
         return false;
     }
 
+    function hasLikedThePost($post){
+        
+        return false;
+    }
+
 @endphp
 <!-- <script>
     function toggleLike(button) {
@@ -95,15 +100,22 @@
 
 
                             {{ formatTimeAgo($post->created_at) }}<br>
-                            Likes: {{ $post->likes()->count() }}, Comments: {{ $post->comments()->count() }}
+                            <p>Likes: <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
+                            <span> Comments: {{ $post->comments()->count() }}</span></p>   
 
                             <div class="row justify-content-center">
                                 <div class="col-md-6">
                                     <div class="card">
-                                        <form method="POST" action="{{ route('like', ['postId' => $post->id]) }}">
-                                            @csrf                                          
-                                            <button class="btn btn-light btn-sm btn-block" type="submit" style="width:100%" >Like</button>
-                                        </form>  
+                                        
+                                            <div id="likeButtonPlace">
+                                                @csrf
+                                                <button id="likeButton" class="btn btn-light btn-sm btn-block like-button" type="submit" style="width:100%" data-post-id="{{ $post->id }}">Like</button>
+                                                
+
+                                                    <!-- <button id="likeButton" class="btn btn-light btn-sm btn-block" type="submit" style="width:100%" >Unlike</button> -->
+
+                                            </div>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -146,5 +158,38 @@
     </div>
 </div>
 
+<script>
+    // Get all like buttons
+    const likeButtons = document.querySelectorAll('.like-button');
+
+    // Attach click event listener to each like button
+    likeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Get the post ID from the data attribute
+            const postId = button.dataset.postId;
+
+            // Send AJAX request to toggle the like status
+            axios.post('/like', { postId: postId })
+            .then(function(response) {
+                if (response.data.liked) {
+                    button.textContent = 'Unlike';
+                } else {
+                    button.textContent = 'Like';
+                }
+
+                const likeCountElement = document.getElementById('like-count-' + postId);
+                if (likeCountElement) {
+                    likeCountElement.textContent = response.data.likeCount;
+                }
+
+                // window.location.reload();
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+        });
+    });
+</script>
 
 @endsection

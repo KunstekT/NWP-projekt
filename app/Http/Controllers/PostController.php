@@ -64,17 +64,15 @@ class PostController extends Controller
         return view('posts', ['posts' => $posts]);
     }
 
-    public function toggleLike(Request $request, $postId)
+    public function toggleLike(Request $request)
     {
-        $user = $request->user();
-        // $post = $request->post();
-        // $post = Post::findOrFail($postId);
+        $user = auth()->user();
+        $postId = $request->input('postId');
+        $post = Post::find($postId);
 
-        // Check if the user has already liked the post
         $existingLike = Like::where('user_id', $user->id)
             ->where('post_id', $postId)
             ->first();
-
         if ($existingLike) {
             $existingLike->delete();
             $liked = false;
@@ -85,9 +83,10 @@ class PostController extends Controller
             ]);
             $liked = true;
         }
+                
+        $likeCount = $post->likes()->count();
 
-        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        return view('posts', ['posts' => $posts]);
+        return response()->json(['liked' => $liked, 'likeCount' => $likeCount]);
     }
 
     public function showComments($postId){
@@ -150,6 +149,6 @@ class PostController extends Controller
         $friendshipsController->refreshUsersToAdd(Auth::id());
 
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        return view('posts', ['posts' => $posts])->with('success', 'Post updated successfully.');
+        return redirect()->route('posts',['posts' => $posts]);
     }
 }

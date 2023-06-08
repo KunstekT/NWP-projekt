@@ -26,25 +26,29 @@ class ChatController extends Controller
         $friendshipsController = new FriendshipsController();
         $friendshipsController->refreshFriends(Auth::id());
         $friendshipsController->refreshUsersToAdd(Auth::id());
-
-        return view('chat', ['users' => $users, 'messages' => $messages]);
+        return view('chat', ['users' => $users, 'messages' => $messages])->with('receiverId', -1);
     }
 
-    public function send(Request $request, $senderId, $receiverId)  
+    // public function send(Request $request, $receiverId)  
+    public function send(Request $request)  
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
-            'sender_id' => 'required',
+            // 'sender_id' => 'required',
             'receiver_id' => 'required',
             'message' => 'required',
         ]);
+        
+        // $sender = $request->input('sender_id');
+        $senderId = Auth::id();
+        $receiverId = $request->input('receiver_id');
 
-        $sender = $request->input('sender_id');
-        $receiver = $request->input('receiver_id');
+        $sender = User::find($senderId);
+        $receiver = User::find($receiverId);
 
         // Create a new chat message
         $message = ChatMessage::createMessage(
-            $validatedData['sender_id'],
+            Auth::id(),
             $validatedData['receiver_id'],
             $validatedData['message']
         );
@@ -52,48 +56,52 @@ class ChatController extends Controller
         // Optionally, you can return a response or redirect to a specific route
         // return response()->json(['message' => 'Message sent successfully', 'data' => $message], 200);
         
+        $messages = ChatMessage::where('sender_id', Auth::id())
+        ->where('receiver_id', $receiverId)
+        ->orWhere(function ($query) use ($receiverId) {
+            $query->where('sender_id', $receiverId)
+                ->where('receiver_id', Auth::id());
+        })->orderBy('created_at', 'asc')->get();
 
-        // $message = new ChatMessage();
-        // $message->message = $request->input('message');
-        // $message->save();
+        $messageListHtml = view('partials.message_list', compact('messages', 'sender', 'receiver'))->render();
 
-        return redirect()->route('chat', ['sender_id' => $sender, 'receiver_id' => $receiver]);
-        
-
+        // return redirect()->route('chat', ['sender_id' => $sender, 'receiver_id' => $receiver]);
+        return response()->json(['messageListHtml' => $messageListHtml]);
     }
 
-    public function getChatWithAUser($senderId, $receiverId){
+    // public function getMessages($receiverId)
+    // {
+    //   $messages = ChatMessage::where('sender_id', Auth::id())
+    //   ->where('receiver_id', $receiverId)
+    //   ->orWhere(function ($query) use ($receiverId) {
+    //       $query->where('sender_id', $receiverId)
+    //           ->where('receiver_id', Auth::id());
+    //   })->orderBy('created_at', 'asc')->get();
+  
+    //   $messageListHtml = view('partials.message_list', compact('messages', 'receiverId'))->render();
+  
+    //   return response()->json(['messages' => $messageListHtml]);
+    // }
+
+    public function getChatWithAUser($receiverId){
         $users = User::all();
         $messages = ChatMessage::all();
-        $_senderId = $senderId;
-        $_receiverId = $receiverId;
         //$data = ChatMessage::all();// Retrieve the data from the database or other sources
         // $data = ChatMessage::where('sender_id', $senderId)->where('receiver_id', $receiverId)->get();
-        $data = ChatMessage::where(function ($query) use ($_senderId, $_receiverId) {
-            $query->where('sender_id', $_senderId)
-                ->where('receiver_id', $_receiverId);
+
+        $data = ChatMessage::where(function ($query) use ($receiverId) {
+            $query->where('sender_id', Auth::id())
+                ->where('receiver_id', $receiverId);
         })
-        ->orWhere(function ($query) use ($_senderId, $_receiverId) {
-            $query->where('sender_id', $_receiverId)
-                ->where('receiver_id', $_senderId);
+        ->orWhere(function ($query) use ($receiverId) {
+            $query->where('sender_id', $receiverId)
+                ->where('receiver_id', Auth::id());
         })
         ->get();
 
-        $username = "Undefined";
-        $receiverUsername = "Undefined";
-        foreach ($users as $user){
-            if($user->id == $senderId)  {
-                $username = $user->name;
-                break; 
-            }                   
-        }      
-        foreach ($users as $user){
-            if($user->id == $receiverId)  {
-                $receiverUsername = $user->name;
-                break; 
-            }                   
-        }                   
+        $sender = User::find(Auth::id());
+        $receiver = User::find($receiverId);                
        
-        return view('chat', ['username' => $username,'receiverUsername' => $receiverUsername,'users' => $users, 'messages' => $messages])->with('data', $data)->with('_senderId', $_senderId)->with('_receiverId', $_receiverId);
+        return view('chat', ['users' => $users, 'messages' => $messages])->with('data', $data)->with('sender', $sender)->with('receiver', $receiver)->with('receiverId', $receiver->id);
     }
 }
