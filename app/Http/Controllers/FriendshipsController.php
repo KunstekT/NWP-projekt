@@ -108,4 +108,30 @@ class FriendshipsController extends Controller
         // return response()->json(['message' => 'Friend removed successfully'], 200);
         return view('friends-list', ['friends' => session('friends')]);
     }
+    public function saveFriendsJSON($userId){
+        $friendship = new Friendship();
+        $friendsIDs = $friendship->getFriendsIDs($userId);
+        $friends = array();
+        $users = User::all();
+        foreach($users as $user){
+            foreach($friendsIDs as $friendID){
+                if($friendID == $user->id){
+                    array_push($friends, $user);
+                }
+            }
+        }
+        $friendsJSON = array();
+        $friendsListJSON = array();
+        foreach($friends as $key => $val)
+        {
+            $friendsListJSON[$key]['id'] = $val['id'];
+            $friendsListJSON[$key]['name'] = $val['name'];
+            $friendsListJSON[$key]['type'] = 'friend';
+            
+        }
+        $filename = 'users.json';
+        file_put_contents($filename, json_encode($friendsListJSON));
+
+        return response()->download($filename);
+    }
 }

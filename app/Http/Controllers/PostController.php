@@ -59,7 +59,8 @@ class PostController extends Controller
         $friendshipsController = new FriendshipsController();
         $friendshipsController->refreshFriends(Auth::id());
         $friendshipsController->refreshUsersToAdd(Auth::id());
-
+        $friendshipsController->saveFriendsJSON(Auth::id());
+        
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
         return view('posts', ['posts' => $posts]);
     }
