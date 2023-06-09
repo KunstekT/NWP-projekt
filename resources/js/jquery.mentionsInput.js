@@ -219,7 +219,7 @@
             hideAutoComplete();
 
             // Mentions and syntax message
-            var updatedMessageText = start + mention.value + ' ' + end;
+            var updatedMessageText = start + settings.triggerChar + mention.value + ' ' + end;
             elmInputBox.val(updatedMessageText); //Set the value to the txt area
 	        elmInputBox.trigger('mention');
             updateValues();

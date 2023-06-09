@@ -55,7 +55,7 @@
             <p>What's on your mind?</p>
             <form method="POST" action="{{ route('post.create') }}">
                 @csrf
-                <textarea class=" form-control" name="content"></textarea>
+                <textarea class="mention form-control" name="content"></textarea>
                 <br>
                 <div class="row justify-content-center">
                     <button class="postMention btn btn-primary" type="submit">Post</button>

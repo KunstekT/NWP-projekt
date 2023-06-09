@@ -39,24 +39,23 @@ class PostController extends Controller
         $users = json_decode($data, true);
 
         $mention_regex = '/@(\w+)/'; //mention regrex to get all @texts
-        $id=0;
+        
         if (preg_match_all($mention_regex, $content, $matches))
         {
             foreach ($matches[1] as $match)
             {
+                $id=0;
                 foreach($users as $user) {
                     if(strtolower($user['name']) === strtolower($match)) {
                         $id = $user['id'];                    
                     }
                 }
                 if($id != 0){
-                    $match_replace = '<a target="_blank" href="/profile/' . $user['id'] . '">' . $user['name'] . '</a>';
-                    $content = preg_replace($mention_regex, $match_replace, $content);
-                }else{
-                    return $content;  
+                    $match_replace = '<a target="_blank" href="/profile/' . $id . '">' . $match . '</a>';
+                    $content = str_replace("@" . $match, $match_replace, $content);
                 }
             }
-        }//$content = preg_replace('/(\w+)/', '<a href="/profile/'. 4 .'"> @Tester4 </a>', $content);
+        }
         return $content;  
     }
 
