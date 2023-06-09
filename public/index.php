@@ -3,6 +3,12 @@
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+
+
 define('LARAVEL_START', microtime(true));
 
 /*
@@ -53,3 +59,31 @@ $response = $kernel->handle(
 )->send();
 
 $kernel->terminate($request, $response);
+
+
+
+
+class MyEvent implements ShouldBroadcast
+{
+  use Dispatchable, InteractsWithSockets, SerializesModels;
+
+  public $message;
+
+  public function __construct($message)
+  {
+      $this->message = $message;
+  }
+
+  public function broadcastOn()
+  {
+      return ['my-channel'];
+  }
+
+  public function broadcastAs()
+  {
+      return 'my-event';
+  }
+}
+
+
+event(new MyEvent('hello world'));

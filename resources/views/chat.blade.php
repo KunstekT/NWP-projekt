@@ -14,6 +14,7 @@ function userIsAFriend($userId) {
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
@@ -46,7 +47,7 @@ function userIsAFriend($userId) {
             </div>
         </div>
         <div class="col-md-8">
-            <div class="container overflow-auto end" style="height:500px">
+            <div class="container overflow-auto end" id="scrolldiv" style="height:500px">
                 @if (isset($data))
 
                     <div class="container" id="dataContainer">
@@ -111,32 +112,126 @@ function userIsAFriend($userId) {
         </div>
     </div>  
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>
-sendButton.addEventListener('click', function() {
-    // Get the message content from the text input field
-    const message = document.getElementById('message-input').value;
-    const receiver_id = <?php echo $receiverId; ?>;
-    
-    axios.post('/send', {
-        message: message,
-        receiver_id: receiver_id
-    })
-    .then(function(response) {
 
-        var updatedMessagesList = response.data.messageListHtml;
-
-        var chatDisplay = document.getElementById('chatDisplay');
-
-        chatDisplay.innerHTML = '';
-        chatDisplay.innerHTML = updatedMessagesList;
-
-        document.getElementById('message-input').value = '';
-    })
-    .catch(function(error) {
-        console.error(error);
+    // Initialize Pusher
+    const pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
+        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        encrypted: true
     });
-});
+
+    // Subscribe to the chat channel
+    const channel = pusher.subscribe('chat');
+
+    // Listen for the 'chat-message-sent' event
+    channel.bind('message-created', function(data) {
+        // Handle the received chat message
+        console.log(data.message);
+    });
+
+   // Sending a message
+function sendMessage(receiverId, message) {
+    console.log(receiverId);
+  axios.post('/send', {
+    // senderId: {{Auth::id()}},
+    receiver_id: receiverId,
+    message: message
+  })
+  .then(response => {
+    // Message sent successfully, update UI if needed
+
+    console.log('Message sent:', response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.error('Error sending message:', error);
+  });
+}
+
+// Receiving messages
+function receiveMessages(receiverId) {
+  axios.get('/receive', {
+    params: {
+      receiverId: receiverId,
+    }
+  })
+  .then(response => {
+    // Handle received messages
+
+    const updatedMessagesList = response.data.messageListHtml;
+    // console.log('Received messages:', updatedMessagesList);
+    var chatDisplay = document.getElementById('chatDisplay');
+    chatDisplay.innerHTML = '';
+    chatDisplay.innerHTML = updatedMessagesList;
+
+    var container = document.getElementById('scrolldiv');
+    container.scrollTop = container.scrollHeight;
+    // if (messages.length > 0) {
+    //   console.log('Received messages:', messages);
+    //   // Update UI with received messages
+
+    // }
+    })
+  .catch(error => {
+    // Handle error
+    console.error('Error receiving messages:', error);
+  });
+}
+
+  // Event handler for send button click
+  document.getElementById('sendButton').addEventListener('click', function () {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value;
+    sendMessage({{$receiverId}}, message);
+    messageInput.value = ''; // Clear the input field
+  });
+
+  // Call receiveMessages initially and then periodically
+  receiveMessages({{$receiverId}});
+  setInterval(receiveMessages, 1000, {{$receiverId}});
+
+// sendButton.addEventListener('click', function() {
+//     // Get the message content from the text input field
+//     const message = document.getElementById('message-input').value;
+//     const receiver_id = ?php echo $receiverId; ?>;
+    
+//     axios.post('/send', {
+//         message: message,
+//         receiver_id: receiver_id
+//     })
+//     .then(function(response) {
+
+//         var updatedMessagesList = response.data.messageListHtml;
+//         // console.log(updatedMessagesList);
+//         var chatDisplay = document.getElementById('chatDisplay');
+
+//         chatDisplay.innerHTML = '';
+//         chatDisplay.innerHTML = updatedMessagesList;
+
+//         document.getElementById('message-input').value = '';
+//     })
+//     .catch(function(error) {
+//         console.error(error);
+//     });
+// });
+
+// window.Echo.channel('chat')
+//     .listen('.message.created', (event) => {
+//         // Update the UI with the received message
+//         const message = event.message;
+//         const userId = event.user_id;
+//         // Update the UI to show the new message from the user with the given ID
+//     });
+
+//     Echo.private('chat.' + receiverId)
+//     .listen('MessageCreated', (event) => {
+//         console.log("MessageCreated!!");
+//         // Update the chat display with the new message
+//         // event.message contains the new message data
+//     });
+
 
 </script>
 @endsection

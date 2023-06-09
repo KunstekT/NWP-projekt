@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'profile_image',
+        'profile_image',        
+        'about',
     ];
 
     /**
@@ -49,7 +50,11 @@ class User extends Authenticatable
     }
 
     public function profileImage()
-{
-    return $this->hasOne(ProfileImage::class);
-}
+    {
+        return $this->hasOne(ProfileImage::class);
+    }
+
+    public function about(){
+        return $this->hasOne(About::class); 
+    }
 }

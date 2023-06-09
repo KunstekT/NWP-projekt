@@ -52,4 +52,19 @@ class ProfileController extends Controller
         return redirect()->back();
     }
 
+    public function editAbout(Request $request){
+        $user = Auth::user();
+        
+        // return view('edit', ['post' => $post]);
+    }
+
+    public function updateAbout(Request $request){
+        $user = Auth::user();
+        $user->about = $request->input('content');
+        $user->save();
+
+        return redirect()->back();
+    }
+
+
 }

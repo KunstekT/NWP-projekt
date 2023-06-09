@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageCreated;
 
 
 class ChatController extends Controller
@@ -32,12 +33,14 @@ class ChatController extends Controller
     // public function send(Request $request, $receiverId)  
     public function send(Request $request)  
     {
+        error_log("Before");
         // Validate the incoming request data
         $validatedData = $request->validate([
             // 'sender_id' => 'required',
             'receiver_id' => 'required',
             'message' => 'required',
         ]);
+        error_log("after");
         
         // $sender = $request->input('sender_id');
         $senderId = Auth::id();
@@ -52,6 +55,8 @@ class ChatController extends Controller
             $validatedData['receiver_id'],
             $validatedData['message']
         );
+        
+        event(new MessageCreated($message, Auth::user(), $receiverId));
 
         // Optionally, you can return a response or redirect to a specific route
         // return response()->json(['message' => 'Message sent successfully', 'data' => $message], 200);
@@ -63,9 +68,35 @@ class ChatController extends Controller
                 ->where('receiver_id', Auth::id());
         })->orderBy('created_at', 'asc')->get();
 
-        $messageListHtml = view('partials.message_list', compact('messages', 'sender', 'receiver'))->render();
+        // $messageListHtml = view('partials.message_list', compact('messages', 'sender', 'receiver'))->render();
 
         // return redirect()->route('chat', ['sender_id' => $sender, 'receiver_id' => $receiver]);
+        return response()->json(['messages' => $messages]);
+        // return response()->json(['messageListHtml' => $messageListHtml]);
+    }
+
+    public function receive(Request $request)
+    {
+        // $senderId = $request->input('senderId');
+        $senderId = Auth::id();
+        $receiverId = $request->input('receiverId');
+
+        // Retrieve all messages between the sender and receiver
+        $messages = ChatMessage::where(function ($query) use ($senderId, $receiverId) {
+            $query->where('sender_id', $senderId)
+                ->where('receiver_id', $receiverId);
+        })->orWhere(function ($query) use ($senderId, $receiverId) {
+            $query->where('sender_id', $receiverId)
+                ->where('receiver_id', $senderId);
+        })->orderBy('created_at', 'asc')
+          ->get();
+    
+        // return response()->json($messages);
+        // error_log($messages);
+        $sender = User::find($senderId);
+        $receiver = User::find($receiverId);
+        $messageListHtml = view('partials.message_list', compact('messages', 'sender', 'receiver'))->render();
+
         return response()->json(['messageListHtml' => $messageListHtml]);
     }
 

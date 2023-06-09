@@ -46,14 +46,14 @@ class PostController extends Controller
     }
 
     public function deletePost($postId)
-{
+    {
     $post = Post::findOrFail($postId);    
     $post->delete();
     $post->comments()->delete();
 
     $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
     return redirect()->route('posts')->with('success', 'Post deleted successfully.');
-}
+    }
     public function posts(){        
 
         $friendshipsController = new FriendshipsController();

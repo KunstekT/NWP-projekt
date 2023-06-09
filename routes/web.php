@@ -41,6 +41,7 @@ Route::get('/chat/{receiverId}', 'App\Http\Controllers\ChatController@getChatWit
 // Route::post('/chat/send/{senderId}/{receiverId}', 'App\Http\Controllers\ChatController@send');
 // Route::post('/send-message/{receiverId}', 'App\Http\Controllers\ChatController@send')->name('send.message');
 Route::post('/send', 'App\Http\Controllers\ChatController@send')->name('send.message');
+Route::get('/receive', 'App\Http\Controllers\ChatController@receive')->name('receive.message');
 // Route::post('/send-message', 'App\Http\Controllers\ChatController@sendMessage')->name('send.message');
 Route::get('/get-messages','App\Http\Controllers\ChatController@getMessages')->name('get.messages');
 
@@ -58,7 +59,7 @@ Auth::routes();
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
 Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts');
 Route::post('/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
-Route::post('/posts/{postId}/comment', '    App\Http\Controllers\PostController@postComment')->name('postComment');
+Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@postComment')->name('postComment');
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
@@ -66,4 +67,5 @@ Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updat
 
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');
 Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileController@uploadProfileImage')->name('profile.uploadProfileImage');
+Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
 

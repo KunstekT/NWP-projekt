@@ -13,7 +13,6 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -36,16 +35,16 @@
                 <!-- Add more menu items as needed -->
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('posts') ? 'active' : '' }}" href="{{ route('posts') }}">Posts</a>
+                        <a class="nav-link {{ Str::startsWith(request()->path(), 'posts') ? 'active' : '' }}" href="{{ route('posts') }}">Posts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile', ['userId' => Auth::id()]) }}">Profile</a>
+                        <a class="nav-link {{  Str::startsWith(request()->path(), 'profile') ? 'active' : '' }}" href="{{ route('profile', ['userId' => Auth::id()]) }}">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('chat') ? 'active' : '' }}" href="{{ route('chat') }}">Chat</a>               
+                        <a class="nav-link {{  Str::startsWith(request()->path(), 'chat') ? 'active' : '' }}" href="{{ route('chat') }}">Chat</a>               
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('friends') ? 'active' : '' }}" href="{{ route('friends', ['userId' => Auth::id()]) }}">Friends</a>
+                        <a class="nav-link {{  (Str::startsWith(request()->path(), 'friends')||Str::startsWith(request()->path(), 'findFriends') ) ? 'active' : '' }}" href="{{ route('friends', ['userId' => Auth::id()]) }}">Friends</a>
                     </li>
                 @endauth
             </ul>
