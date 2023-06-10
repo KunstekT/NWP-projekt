@@ -33,13 +33,17 @@ Route::post('/logout', 'App\Http\Controllers\Auth\LogoutController@logout')->nam
 Route::get('/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('/register', 'App\Http\Controllers\Auth\RegisterController@register');
 
-Route::get('/chat', 'App\Http\Controllers\ChatController@chat')->name('chat');
 
 //Route::post('/getChatWithAUser/{sender_id}/{receiver_id}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('getChatWithAUser');
-Route::get('/chat/{sender_id}/{receiver_id}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('chat.with');
+Route::get('/chat', 'App\Http\Controllers\ChatController@chat')->name('chat');
+Route::get('/chat/{receiverId}', 'App\Http\Controllers\ChatController@getChatWithAUser')->name('chatWith');
 
-Route::post('/chat/send/{senderId}/{receiverId}', 'App\Http\Controllers\ChatController@send');
-Route::post('/send-message/{senderId}/{receiverId}', 'App\Http\Controllers\ChatController@send')->name('send.message');
+// Route::post('/chat/send/{senderId}/{receiverId}', 'App\Http\Controllers\ChatController@send');
+// Route::post('/send-message/{receiverId}', 'App\Http\Controllers\ChatController@send')->name('send.message');
+Route::post('/send', 'App\Http\Controllers\ChatController@send')->name('send.message');
+Route::get('/receive', 'App\Http\Controllers\ChatController@receive')->name('receive.message');
+// Route::post('/send-message', 'App\Http\Controllers\ChatController@sendMessage')->name('send.message');
+Route::get('/get-messages','App\Http\Controllers\ChatController@getMessages')->name('get.messages');
 
 Route::get('/friends/{userId}', 'App\Http\Controllers\FriendshipsController@get')->name('friends');
 Route::get('/findFriends/{userId}', 'App\Http\Controllers\FriendshipsController@findFriends')->name('findFriends');
@@ -54,12 +58,15 @@ Auth::routes();
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
 Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts');
-Route::post('/posts/{postId}/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
-Route::post('/posts/{postId}/comment', '    App\Http\Controllers\PostController@postComment')->name('postComment');
+Route::post('/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
+Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@postComment')->name('postComment');
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
+Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
 Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updatePost')->name('updatePost');
 
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');
 Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileController@uploadProfileImage')->name('profile.uploadProfileImage');
+Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
+

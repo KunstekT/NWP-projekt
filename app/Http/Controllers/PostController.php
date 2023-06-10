@@ -73,14 +73,14 @@ class PostController extends Controller
     }
 
     public function deletePost($postId)
-{
+    {
     $post = Post::findOrFail($postId);    
     $post->delete();
     $post->comments()->delete();
 
     $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
     return redirect()->route('posts')->with('success', 'Post deleted successfully.');
-}
+    }
     public function posts(){        
 
         $friendshipsController = new FriendshipsController();
@@ -92,17 +92,15 @@ class PostController extends Controller
         return view('posts', ['posts' => $posts]);
     }
 
-    public function toggleLike(Request $request, $postId)
+    public function toggleLike(Request $request)
     {
-        $user = $request->user();
-        // $post = $request->post();
-        // $post = Post::findOrFail($postId);
+        $user = auth()->user();
+        $postId = $request->input('postId');
+        $post = Post::find($postId);
 
-        // Check if the user has already liked the post
         $existingLike = Like::where('user_id', $user->id)
             ->where('post_id', $postId)
             ->first();
-
         if ($existingLike) {
             $existingLike->delete();
             $liked = false;
@@ -113,19 +111,14 @@ class PostController extends Controller
             ]);
             $liked = true;
         }
+                
+        $likeCount = $post->likes()->count();
 
-        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        return view('posts', ['posts' => $posts]);
+        return response()->json(['liked' => $liked, 'likeCount' => $likeCount]);
     }
 
-    public function showComments($postId){
-        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        $postWithOpenedCommentsId = $postId;
+    private function getUserCommentPairs($postId){
         $comments = Comment::where('post_id', $postId)->get();
-
-        // $userIds = $comments->pluck('user_id')->unique();
-        // $users = User::whereIn('id', $userIds)->get();
-        
         $userCommentPairs = $comments->map(function ($comment) {
             $user = $comment->user;
             return [
@@ -133,8 +126,30 @@ class PostController extends Controller
                 'comment' => $comment,
             ];
         });
-        
+        return $userCommentPairs;
+    }
+
+    public function showComments($postId){
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        $postWithOpenedCommentsId = $postId;
+
+        $userCommentPairs = $this->getUserCommentPairs($postId);
+            
         return view('posts', ['posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
+        
+        // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
+    }
+    public function showCommentsInProfilePage($postId){
+        
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        $postWithOpenedCommentsId = $postId;
+
+        $post = Post::with('user')->find($postId);
+        $user = $post->user;
+
+        $userCommentPairs = $this->getUserCommentPairs($postId);
+            
+        return view('profile', ['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
         
         // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
     }
@@ -178,6 +193,6 @@ class PostController extends Controller
         $friendshipsController->refreshUsersToAdd(Auth::id());
 
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        return view('posts', ['posts' => $posts])->with('success', 'Post updated successfully.');
+        return redirect()->route('posts',['posts' => $posts]);
     }
 }
