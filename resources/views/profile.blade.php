@@ -16,10 +16,35 @@
                     <input type="file" name="profile_image" id="profileImageInput" style="display: none;">
                 </a>
                 <!-- Rest of the form -->
-            </form>
+            </form>            
                 
             <!-- Display the user's name -->
             <h2 class="mx-auto">{{ $user->name }}</h2>
+
+            @if($user->id == Auth::id())
+            <div class="container">
+                <form method="POST" class="form-group" action="{{ route('updateAbout') }}">
+                    @csrf
+                    <label for="content">Content</label>
+                    @if($user->about)
+                        <textarea class="form-control" name="content" id="content" rows="3" required>{{ $user->about }}</textarea>
+                    @else
+                        <textarea class="form-control" name="content" id="content" rows="3" required>Write something about yourself!</textarea>
+                    @endif
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+            @else
+                <div class="card mx-auto">
+                @if ($user->about)
+                    {{ $user->about }}
+                @else
+                    There is no information about this user.          
+                @endif
+                </div>
+            @endif
+
+            @include('partials.posts_list', ['showUserOnly' => true, 'routeName' => 'profile'])
 
             <script>
                 const uploadButton = document.querySelector('.upload-button');
@@ -44,6 +69,39 @@
                         reader.readAsDataURL(this.files[0]);
                     }       
                 });
+
+                // Get all like buttons
+                const editButton = document.getElementById('editAbout');
+
+                // Attach click event listener to each like button
+                likeButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // Get the post ID from the data attribute
+                        const postId = button.dataset.postId;
+
+                        // Send AJAX request to toggle the like status
+                        axios.post('/like', { postId: postId })
+                        .then(function(response) {
+                            if (response.data.liked) {
+                                button.textContent = 'Unlike';
+                            } else {
+                                button.textContent = 'Like';
+                            }
+
+                            const likeCountElement = document.getElementById('like-count-' + postId);
+                            if (likeCountElement) {
+                                likeCountElement.textContent = response.data.likeCount;
+                            }
+
+                            // window.location.reload();
+                        })
+                        .catch(error => {
+                            // Handle any errors
+                            console.error(error);
+                        });
+                    });
+                });
+
 
                 // JavaScript approach
                 // document.getElementById('uploadButton').addEventListener('click', function() {

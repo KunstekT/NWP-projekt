@@ -13,9 +13,11 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -36,16 +38,16 @@
                 <!-- Add more menu items as needed -->
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('posts') ? 'active' : '' }}" href="{{ route('posts') }}">Posts</a>
+                        <a class="nav-link {{ Str::startsWith(request()->path(), 'posts') ? 'active' : '' }}" href="{{ route('posts') }}">Posts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile', ['userId' => Auth::id()]) }}">Profile</a>
+                        <a class="nav-link {{  Str::startsWith(request()->path(), 'profile') ? 'active' : '' }}" href="{{ route('profile', ['userId' => Auth::id()]) }}">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('chat') ? 'active' : '' }}" href="{{ route('chat') }}">Chat</a>               
+                        <a class="nav-link {{  Str::startsWith(request()->path(), 'chat') ? 'active' : '' }}" href="{{ route('chat') }}">Chat</a>               
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('friends') ? 'active' : '' }}" href="{{ route('friends', ['userId' => Auth::id()]) }}">Friends</a>
+                        <a class="nav-link {{  (Str::startsWith(request()->path(), 'friends')||Str::startsWith(request()->path(), 'findFriends') ) ? 'active' : '' }}" href="{{ route('friends', ['userId' => Auth::id()]) }}">Friends</a>
                     </li>
                 @endauth
             </ul>
@@ -80,7 +82,19 @@
                                 </li>
                             @endif
                         @else
+                            <li class="dropdown nav-item">
+                                <button class="dropdown-toggle notif-button
+                                " data-bs-toggle="dropdown">
+                                    <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="#">Link 1</a>
+                                    <a class="dropdown-item" href="#">Link 2</a>
+                                    <a class="dropdown-item" href="#">Link 3</a>
+                                </div>
+                            </li>
                             <li class="nav-item dropdown">
+                                
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
@@ -105,7 +119,13 @@
 
         <main class="py-4">
             @yield('content')
+            @yield('script')
         </main>
     </div>
+    @section('content')
+    <script>
+        
+    </script>
+    @endsection('content')
 </body>
 </html>
