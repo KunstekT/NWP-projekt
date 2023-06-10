@@ -4,4 +4,3 @@ window.$ = jQuery;
 import './jquery.mentionsInput';
 import './jquery.elastic.source';
 import './Mentions';
-import './notificationDropdown';

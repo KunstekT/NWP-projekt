@@ -6,6 +6,7 @@ use App\Models\Auth;
 use App\Models\Friendship;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FriendshipsController extends Controller
 {
@@ -132,6 +133,6 @@ class FriendshipsController extends Controller
         $filename = 'users.json';
         file_put_contents($filename, json_encode($friendsListJSON));
 
-        return response()->download($filename);
+        return Storage::disk('local')->put($filename, json_encode($friendsListJSON)); 
     }
 }

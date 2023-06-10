@@ -4,7 +4,7 @@
 <div class="card">     
     @foreach ($userCommentPairs as $pair)
     <div class="card" data-comment-id="{{ $pair['comment']->id }}" id="comment-{{ $pair['comment']->id }}">
-        <p><strong>{{ $pair['user']->name }}:</strong> {{ $pair['comment']->content }}
+        <p><strong>{{ $pair['user']->name }}:</strong> @php echo $pair['comment']->content @endphp
         @if($pair['user']->id == Auth::id())
             <button class="btn btn-danger deleteCommentButton float-end" data-post-id="{{$postId}}" data-comment-id="{{$pair['comment']->id}}">DELETE</button>
         @endif
@@ -16,9 +16,9 @@
 <form method="POST" action="{{ route('postComment', ['postId' => $post->id]) }}">
     @csrf
     <div class="form-group">
-        <textarea class="form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
+        <textarea class="mention form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Post Comment</button>
+    <button type="submit" class="postMention btn btn-primary">Post Comment</button>
 </form>
 
 <script>
