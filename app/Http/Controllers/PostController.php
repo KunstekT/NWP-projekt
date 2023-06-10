@@ -91,6 +91,9 @@ class PostController extends Controller
     {
         $user = Auth::user();
         $content = $request->input('content');
+        if($content==null){
+            return redirect('/posts');
+        }
         $content = $this->getMentions($content);
         $post = new Post();
         $post->user_id = $user->id;
@@ -205,6 +208,9 @@ class PostController extends Controller
         $comment->user_id = $request->user()->id;
         
         $comment->content = $request->input('content');
+        if($comment->content == null){
+            return 0;
+        }
         $comment->content = $this->getMentions($comment->content);
         $comment->save();
 
