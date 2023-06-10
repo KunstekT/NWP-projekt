@@ -109,22 +109,7 @@ use App\Models\Post;
 
         @isset($postWithOpenedCommentsId)                                                       
             @if($postWithOpenedCommentsId == $post->id)
-            <br>
-            <div class="card">     
-                @foreach ($userCommentPairs as $pair)
-                <div class="card">
-                    <p><strong>{{ $pair['user']->name }}:</strong> {{ $pair['comment']->content }}</p>
-                    {{ formatTimeAgo($pair['comment']->created_at) }}
-                </div>
-                @endforeach
-            </div>
-            <form method="POST" action="{{ route('postComment', ['postId' => $post->id]) }}">
-                @csrf
-                <div class="form-group">
-                    <textarea class="form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Post Comment</button>
-            </form>
+                @include('partials.comments_list', ['postId' =>$post->id,'userCommentPairs' => $userCommentPairs])
             @endif
         @endisset
     </div>
