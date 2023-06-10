@@ -1,4 +1,3 @@
-
 @php
 use App\Models\Post;
     $posts = Post::all();
@@ -72,7 +71,7 @@ use App\Models\Post;
                 </div>
             </div>
             
-            <p> {{ $post->content }}</p>
+            <p> @php echo $post->content @endphp</p>
 
             {{ formatTimeAgo($post->created_at) }}<br>
             <p>Likes: <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
