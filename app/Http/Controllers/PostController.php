@@ -223,6 +223,27 @@ class PostController extends Controller
 
         return redirect()->back()->with('success', 'Comment posted successfully');
     }
+    public function deleteComment($postId, $commentId)
+    {
+        error_log("DELETING COMMENT!!!");
+        
+        // Find the comment by ID
+        $comment = Comment::findOrFail($commentId);
+    
+        // Check if the authenticated user is authorized to delete the comment
+        if ($comment->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    
+        // Delete the comment
+        $comment->delete();
+    
+        // You can optionally return a success response or any other data you need
+        return response()->json(['message' => 'Comment deleted successfully']);
+        
+    }
+
+
 
     public function editPost($postId)
     {
