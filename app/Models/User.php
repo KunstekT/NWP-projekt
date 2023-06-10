@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Post::class, 'likes');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

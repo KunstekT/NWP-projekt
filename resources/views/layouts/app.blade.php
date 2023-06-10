@@ -1,3 +1,8 @@
+@php
+    use App\Models\Notification;
+    $notifications = Notification::orderByDesc('created_at')->get();
+@endphp
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -88,9 +93,17 @@
                                     <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
+                                    @forelse($notifications as $notification)
+                                        @if($notification->friend_id == Auth::user()->id)
+                                            @if ($notification->type == "post")
+                                                <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                            @else
+                                                <a class="dropdown-item" href="{{ route('showComments', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                            @endif
+                                        @endif
+                                        @empty
+                                            <p>No notifications!</p>
+                                    @endforelse
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
@@ -122,10 +135,13 @@
             @yield('script')
         </main>
     </div>
-    @section('content')
+    @section('script')
     <script>
-        
+        function scrollToPost(postId) {
+            const postElement = document.getElementById('postId');;
+            postElement.scrollIntoView({ behavior: 'smooth' });
+        }
     </script>
-    @endsection('content')
+    @endsection('script')
 </body>
 </html>

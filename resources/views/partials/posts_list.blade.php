@@ -1,6 +1,6 @@
 @php
 use App\Models\Post;
-    $posts = Post::all();
+    $posts = Post::orderByDesc('created_at')->get();
 
     function formatTimeAgo($dateTime)
     {
@@ -66,7 +66,7 @@ use App\Models\Post;
                 <a href="{{ route('profile', ['userId'=> $post->user_id]) }}" style="text-decoration:none;"><strong style="font-size:22px">{{ $post->user->name }}</strong></a>
             </div>
             <div class="col-md-6 ms-auto">
-            @if($post->user_id == $postOwner->id)
+            @if($post->user_id == Auth::user()->id)
                 <form class="form-group float-end" action="{{ route('posts.delete', ['postId' => $post->id]) }}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -78,7 +78,7 @@ use App\Models\Post;
             </div>
         </div>
         
-        <p> @php echo $post->content @endphp</p>
+        <p data-post-id="<?= $post->id ?>"> @php echo $post->content @endphp</p>
 
         {{ formatTimeAgo($post->created_at) }}<br>
         <p>Likes: <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>

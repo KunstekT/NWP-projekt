@@ -42,17 +42,6 @@ class PostController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    // public function index()
-    // {
-    //     $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-    //     return view('posts', ['posts' => $posts]);
-    // }
-
     function getMentions($content)
     {
         $this->emptyOutlastMentionedFriendsIDs();
