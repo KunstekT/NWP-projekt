@@ -9,6 +9,18 @@ a.nav-link.active {
     /* Be cautious when using the !important declaration, as it can lead to specificity conflicts and make your styles harder to maintain. 
     It's generally recommended to use more specific selectors or adjust the order of your CSS rules to avoid relying heavily on !important. */
 }
+
+.notif-button{
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.nav-icon{
+  height: 30px;
+  width: 30px;
+}
+
 .mentions{
     visibility: hidden;
     display: none;

@@ -16,7 +16,11 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id(); //notif id
             $table->text('content'); //notif content
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('friend_id');
             $table->timestamps();  //notif creation time
+
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade'); //what triggered notif
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); //who recieves notif
             $table->foreign('friend_id')->references('id')->on('users')->onDelete('cascade');  //who triggered notif

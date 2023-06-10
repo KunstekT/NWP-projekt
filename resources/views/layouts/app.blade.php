@@ -83,7 +83,19 @@
                                 </li>
                             @endif
                         @else
+                            <li class="dropdown nav-item">
+                                <button class="dropdown-toggle notif-button
+                                " data-bs-toggle="dropdown">
+                                    <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="#">Link 1</a>
+                                    <a class="dropdown-item" href="#">Link 2</a>
+                                    <a class="dropdown-item" href="#">Link 3</a>
+                                </div>
+                            </li>
                             <li class="nav-item dropdown">
+                                
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
@@ -108,7 +120,13 @@
 
         <main class="py-4">
             @yield('content')
+            @yield('script')
         </main>
     </div>
+    @section('content')
+    <script>
+        
+    </script>
+    @endsection('content')
 </body>
 </html>
