@@ -111,7 +111,7 @@ use App\Models\Post;
                     <div class="card">     
                         @foreach ($userCommentPairs as $pair)
                         <div class="card">
-                            <p><strong>{{ $pair['user']->name }}:</strong> {{ $pair['comment']->content }}</p>
+                            <p><strong>{{ $pair['user']->name }}:</strong> @php echo $pair['comment']->content @endphp</p>
                             {{ formatTimeAgo($pair['comment']->created_at) }}
                         </div>
                         @endforeach
@@ -120,10 +120,10 @@ use App\Models\Post;
                         @csrf
 
                         <div class="form-group">
-                            <textarea class="form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
+                            <textarea class="mention form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                        <button type="submit" class="postMention btn btn-primary">Post Comment</button>
                     </form>
                     @endif
                 @endisset
@@ -131,7 +131,7 @@ use App\Models\Post;
     @endif  
     <br><br>
 @empty
-    <li>No posts</li>
+    <li>No posts. Post something!</li>
 @endforelse
 </ul>
 

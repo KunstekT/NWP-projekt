@@ -4,13 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
 use App\Models\Like;
 use App\Models\User;
 use App\Models\Comment;
+use App\Models\Notification;
 
 class PostController extends Controller
 {
+    private $lastMentionedFriendsIDs = [];
+
+    public function addMentionedFriendID($element)
+    {
+        array_push($this->lastMentionedFriendsIDs, $element);
+    }
+
+    public function getlastMentionedFriendsIDs()
+    {
+        return $this->lastMentionedFriendsIDs;
+    }
+
+    public function emptyOutlastMentionedFriendsIDs()
+    {
+        if(!empty($this->lastMentionedFriendsIDs)){
+            $this->lastMentionedFriendsIDs = [];
+        }
+    }
+
     /**
      * Create a new controller instance.
      *
@@ -34,26 +55,33 @@ class PostController extends Controller
 
     function getMentions($content)
     {
-        $json = 'users.json';
-        $data = file_get_contents($json);
+        $this->emptyOutlastMentionedFriendsIDs();
+        $json = '/users.json';
+        $data = Storage::disk('local')->get($json);
         $users = json_decode($data, true);
 
         $mention_regex = '/@(\w+)/'; //mention regrex to get all @texts
         
         if (preg_match_all($mention_regex, $content, $matches))
         {
+            $ids=[];
+            $foundMatches=[];
             foreach ($matches[1] as $match)
-            {
-                $id=0;
+            {                
                 foreach($users as $user) {
-                    if(strtolower($user['name']) === strtolower($match)) {
-                        $id = $user['id'];                    
+                    if(strtolower($user['name']) == strtolower($match)) {
+                        array_push($ids, $user['id']);    
+                        array_push($foundMatches, $user['name']);                                      
                     }
                 }
-                if($id != 0){
-                    $match_replace = '<a target="_blank" href="/profile/' . $id . '">' . $match . '</a>';
-                    $content = str_replace("@" . $match, $match_replace, $content);
-                }
+                
+            }
+            $counter = -1;
+            foreach ($ids as $id){
+                $counter++;
+                $match_replace = '<a target="_blank" href="/profile/' . $id . '">' . $foundMatches[$counter] . '</a> ';
+                $content = preg_replace('/@'. $foundMatches[$counter] .'/', $match_replace, $content, 1);
+                $this->addMentionedFriendID($id);
             }
         }
         return $content;  
@@ -68,7 +96,19 @@ class PostController extends Controller
         $post->user_id = $user->id;
         $post->content = $content;
         $post->save();
-    
+
+        $friends = $this->getlastMentionedFriendsIDs();
+        if(!empty($friends)){
+            foreach($friends as $friend){
+                $notif = new Notification();
+                $notif->content = $user->name . " has mentioned you in a post.";
+                $notif->type_id = $post->id;
+                $notif->user_id = $user->id;
+                $notif->friend_id = $friend;
+                $notif->type = "post";
+                $notif->save();
+            }
+        }
         return redirect('/posts');
     }
 
@@ -163,8 +203,23 @@ class PostController extends Controller
         $comment = new Comment();
         $comment->post_id = $postId;
         $comment->user_id = $request->user()->id;
+        
         $comment->content = $request->input('content');
+        $comment->content = $this->getMentions($comment->content);
         $comment->save();
+
+        $friends = $this->getlastMentionedFriendsIDs();
+        if(!empty($friends)){
+            foreach($friends as $friend){
+                $notif = new Notification();
+                $notif->content = $request->user()->name . " has mentioned you in a comment.";
+                $notif->type_id = $comment->id;
+                $notif->user_id = $comment->user_id;
+                $notif->friend_id = $friend;
+                $notif->type = "comment";
+                $notif->save();
+            }
+        }
 
         return redirect()->back()->with('success', 'Comment posted successfully');
     }
@@ -185,6 +240,7 @@ class PostController extends Controller
         ]);
     
         $post->content = $request->input('content');
+        $post->content = $this->getMentions($post->content);
         $post->save();
 
 
