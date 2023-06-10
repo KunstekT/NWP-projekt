@@ -61,6 +61,7 @@ Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts')
 Route::post('/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
 Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@postComment')->name('postComment');
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
+Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
 Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updatePost')->name('updatePost');

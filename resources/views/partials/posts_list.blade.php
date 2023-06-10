@@ -94,9 +94,15 @@ use App\Models\Post;
                     </div>
                 </div>
                 <div class="col-md-6">
+                    @if(Str::startsWith(request()->path(), 'posts'))
                     <div class="card">
                         <a class="btn btn-light btn-sm btn-block" href="{{ route('showComments', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
                     </div>   
+                    @else
+                    <div class="card">
+                        <a class="btn btn-light btn-sm btn-block" href="{{ route('showCommentsInProfilePage', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
+                    </div>  
+                    @endif
                 </div>
             </div>  
 

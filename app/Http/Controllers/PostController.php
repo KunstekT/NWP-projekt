@@ -89,14 +89,8 @@ class PostController extends Controller
         return response()->json(['liked' => $liked, 'likeCount' => $likeCount]);
     }
 
-    public function showComments($postId){
-        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-        $postWithOpenedCommentsId = $postId;
+    private function getUserCommentPairs($postId){
         $comments = Comment::where('post_id', $postId)->get();
-
-        // $userIds = $comments->pluck('user_id')->unique();
-        // $users = User::whereIn('id', $userIds)->get();
-        
         $userCommentPairs = $comments->map(function ($comment) {
             $user = $comment->user;
             return [
@@ -104,8 +98,30 @@ class PostController extends Controller
                 'comment' => $comment,
             ];
         });
-        
+        return $userCommentPairs;
+    }
+
+    public function showComments($postId){
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        $postWithOpenedCommentsId = $postId;
+
+        $userCommentPairs = $this->getUserCommentPairs($postId);
+            
         return view('posts', ['posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
+        
+        // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
+    }
+    public function showCommentsInProfilePage($postId){
+        
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+        $postWithOpenedCommentsId = $postId;
+
+        $post = Post::with('user')->find($postId);
+        $user = $post->user;
+
+        $userCommentPairs = $this->getUserCommentPairs($postId);
+            
+        return view('profile', ['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
         
         // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
     }
