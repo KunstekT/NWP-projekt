@@ -64,6 +64,7 @@ Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@
 Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
+Route::get('/edit/{postId}', 'App\Http\Controllers\PostController@edit')->name('post.edit');
 Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updatePost')->name('updatePost');
 
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');

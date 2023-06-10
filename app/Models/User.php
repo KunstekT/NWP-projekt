@@ -54,7 +54,8 @@ class User extends Authenticatable
         return $this->hasOne(ProfileImage::class);
     }
 
-    public function about(){
-        return $this->hasOne(About::class); 
+    public function likedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'likes');
     }
 }
