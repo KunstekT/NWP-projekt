@@ -93,8 +93,7 @@
                             @endif
                         @else
                             <li class="dropdown nav-item">
-                                <button class="dropdown-toggle notif-button
-                                " data-bs-toggle="dropdown">
+                                <button class="dropdown-toggle notif-button" data-bs-toggle="dropdown">
                                     <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end">

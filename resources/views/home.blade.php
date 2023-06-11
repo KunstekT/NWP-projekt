@@ -40,9 +40,13 @@
             </div>
         @endif
 
+        @php
+            $posts = Auth::user()->posts();
+        @endphp
+        @include('partials.post', ['singlePostOwner'=> Auth::user(), 'singlePost'=> $posts->first()]);
 
         </div>
     </div>
 </div>
-  
+
 @endsection

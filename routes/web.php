@@ -65,10 +65,13 @@ Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@post
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
 Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
 Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
+Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
+Route::get('/post/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInSinglePost')->name('showCommentsInSinglePost');
 Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\PostController@deleteComment')->name('comments.delete');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
 Route::get('/edit/{postId}', 'App\Http\Controllers\PostController@edit')->name('post.edit');
+Route::patch('/updatePost', 'App\Http\Controllers\PostController@updateSinglePost')->name('updateSinglePost');
 Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updatePost')->name('updatePost');
 
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');

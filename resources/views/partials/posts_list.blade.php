@@ -58,7 +58,7 @@ use Illuminate\Database\Query\Builder;
 
 <ul class="list-group">
 @forelse($posts as $post)
-@php
+    @php
         $postOwner = \App\Models\User::find($post->user_id);
 @endphp
     @isset($profileUser)        

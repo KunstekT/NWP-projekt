@@ -13,7 +13,7 @@
     </div>
     @endforeach
 </div>
-<form method="POST" action="{{ route('postComment', ['postId' => $post->id]) }}">
+<form method="POST" action="{{ route('postComment', ['postId' => $postId]) }}">
     @csrf
     <div class="form-group">
         <textarea class="mention form-control" name="content" rows="3" placeholder="Write your comment"></textarea>
