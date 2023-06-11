@@ -149,7 +149,7 @@ class PostController extends Controller
         return response()->json(['liked' => $liked, 'likeCount' => $likeCount]);
     }
 
-    private function getUserCommentPairs($postId){
+    public function getUserCommentPairs($postId){
         $comments = Comment::where('post_id', $postId)->get();
         $userCommentPairs = $comments->map(function ($comment) {
             $user = $comment->user;
@@ -177,13 +177,23 @@ class PostController extends Controller
         $postWithOpenedCommentsId = $postId;
 
         $post = Post::with('user')->find($postId);
-        $user = $post->user;
+        $user = $post->user();
 
         $userCommentPairs = $this->getUserCommentPairs($postId);
             
         return view('profile', ['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
         
         // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
+    }    
+    public function showCommentsInSinglePost($postId){
+        // $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+
+        $post = Post::with('user')->find($postId);
+
+        $userCommentPairs = $this->getUserCommentPairs($postId);
+        error_log($userCommentPairs);
+            
+        return redirect()->back()->with(['post'=> $post, 'userCommentPairs' => $userCommentPairs]);
     }
 
     public function postComment(Request $request, $postId)
@@ -245,6 +255,19 @@ class PostController extends Controller
         $post = Post::findOrFail($postId);
     
         return view('edit', ['post' => $post]);
+    }
+    public function updateSinglePost(Request $request)
+    {
+        $postId = $request->input('postId');
+        $request->validate([
+            'content' => 'required',
+        ]);
+        $post = Post::find($postId);
+        $post->content = $request->input('content');
+        $post->content = $this->getMentions($post->content);
+        $post->save();
+    
+        return response()->json(['message' => 'Post updated successfully', 'content' => Post::find($postId)->content]);
     }
     
     public function updatePost(Request $request, $postId)

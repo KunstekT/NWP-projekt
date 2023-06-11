@@ -15,7 +15,7 @@
                 </div>
             </form>
             <br>
-            @include('partials.posts_list', ['showUserOnly' => false, 'routeName' => 'posts'])
+            @include('partials.posts_list')
         </div>
     </div>
 </div>

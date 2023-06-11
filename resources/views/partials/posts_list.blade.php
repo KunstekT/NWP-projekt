@@ -40,7 +40,7 @@ use App\Models\Post;
 
 <ul class="list-group">
 @forelse($posts as $post)
-@php
+    @php
         $postOwner = \App\Models\User::find($post->user_id);
     @endphp
 

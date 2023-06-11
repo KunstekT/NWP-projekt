@@ -44,7 +44,7 @@
                 </div>
             @endif
 
-            @include('partials.posts_list', ['profileUser' => $user, 'showUserOnly' => true, 'routeName' => 'profile'])
+            @include('partials.posts_list', ['profileUser' => $user])
 
             <script>
                 const uploadButton = document.querySelector('.upload-button');
