@@ -71,6 +71,7 @@ Route::get('/post/{postId}/showComments', 'App\Http\Controllers\PostController@s
 Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\PostController@deleteComment')->name('comments.delete');
 
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
+Route::delete('/posts/post/{postId}', 'App\Http\Controllers\PostController@deleteSinglePost')->name('posts.deleteSingle');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
 Route::get('/edit/{postId}', 'App\Http\Controllers\PostController@edit')->name('post.edit');
 Route::patch('/updatePost', 'App\Http\Controllers\PostController@updateSinglePost')->name('updateSinglePost');
@@ -81,3 +82,7 @@ Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileControll
 Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
 
 Route::get('/post/{post}', 'App\Http\Controllers\PostController@showPost')->name('post');
+
+Route::any('{url}', function(){
+    return redirect('/posts');
+})->where('url', '.*');

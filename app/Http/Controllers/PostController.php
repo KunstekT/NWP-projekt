@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 use App\Models\Post;
 use App\Models\Like;
 use App\Models\User;
@@ -111,8 +115,19 @@ class PostController extends Controller
         $post->comments()->delete();
 
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    
         return redirect()->back()->with('success', 'Post deleted successfully.');
-        }
+    }
+    public function deleteSinglePost($postId)
+    {
+        $post = Post::findOrFail($postId);    
+        $post->delete();
+        $post->comments()->delete();
+
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    
+        return view('posts', ['posts' => $posts]);
+    }
     public function posts(){        
 
         $friendshipsController = new FriendshipsController();
