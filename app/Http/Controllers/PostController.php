@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use App\Models\Post;
@@ -121,12 +125,23 @@ class PostController extends Controller
 
     public function deletePost($postId)
     {
-    $post = Post::findOrFail($postId);    
-    $post->delete();
-    $post->comments()->delete();
+        $post = Post::findOrFail($postId);    
+        $post->delete();
+        $post->comments()->delete();
 
-    $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
-    return redirect()->route('posts')->with('success', 'Post deleted successfully.');
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    
+        return redirect()->back()->with('success', 'Post deleted successfully.');
+    }
+    public function deleteSinglePost($postId)
+    {
+        $post = Post::findOrFail($postId);    
+        $post->delete();
+        $post->comments()->delete();
+
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    
+        return view('posts', ['posts' => $posts]);
     }
     public function posts(){        
 
@@ -173,6 +188,12 @@ class PostController extends Controller
         return response()->json(['liked' => $liked, 'likeCount' => $likeCount]);
     }
 
+    public function getComments($postId){
+        $userCommentPairs = $this->getUserCommentPairs($postId);      
+        
+        return response()->json(['userCommentPairs' => $userCommentPairs]);
+    }
+
     public function getUserCommentPairs($postId){
         $comments = Comment::where('post_id', $postId)->get();
         $userCommentPairs = $comments->map(function ($comment) {
@@ -204,9 +225,9 @@ class PostController extends Controller
         $user = $post->user();
 
         $userCommentPairs = $this->getUserCommentPairs($postId);
-            
-        return view('profile', ['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
-        
+            error_log("Yes");
+        // return view('profile', ['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
+        return redirect()->back()->with(['user' => $user, 'posts' => $posts,'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'userCommentPairs' => $userCommentPairs]);
         // return view('posts', ['posts' => $posts, 'postWithOpenedCommentsId' => $postWithOpenedCommentsId, 'comments' => $comments, 'users' => $users]);
     }    
     public function showCommentsInSinglePost($postId){

@@ -63,14 +63,17 @@ Auth::routes();
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
 Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts');
 Route::post('/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
+Route::get('/comments/{postId}', 'App\Http\Controllers\PostController@getComments')->name('like');
+
 Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@postComment')->name('postComment');
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
 Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
-Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
-Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
 Route::get('/post/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInSinglePost')->name('showCommentsInSinglePost');
+// Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
 Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\PostController@deleteComment')->name('comments.delete');
+
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
+Route::delete('/posts/post/{postId}', 'App\Http\Controllers\PostController@deleteSinglePost')->name('posts.deleteSingle');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
 Route::get('/edit/{postId}', 'App\Http\Controllers\PostController@edit')->name('post.edit');
 Route::patch('/updatePost', 'App\Http\Controllers\PostController@updateSinglePost')->name('updateSinglePost');
@@ -81,7 +84,6 @@ Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileControll
 Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
 
 Route::get('/post/{post}', 'App\Http\Controllers\PostController@showPost')->name('post');
-
 Route::get('/api/get-users', function () {
     $friends_ids_ment = Friendship::where('user_id', auth()->id())->pluck('friend_id');
     $friends_data_ment = User::whereIn('id', $friends_ids_ment)->get();
@@ -94,3 +96,8 @@ Route::get('/api/get-users', function () {
     });
     return response()->json($friends_ment_all);
 });
+
+
+Route::any('{url}', function(){
+    return redirect('/posts');
+})->where('url', '.*');

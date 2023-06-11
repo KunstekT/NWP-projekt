@@ -157,7 +157,9 @@
             const postElement = document.getElementById('postId');;
             postElement.scrollIntoView({ behavior: 'smooth' });
         }
-    </script>
+
+        
+       </script>
     @endsection('script')
 </body>
 </html>

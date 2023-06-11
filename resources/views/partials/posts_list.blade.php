@@ -114,21 +114,25 @@ use Illuminate\Database\Query\Builder;
             <div class="col-md-6">
                 @if(Str::startsWith(request()->path(), 'posts'))
                 <div class="card">
-                    <a class="btn btn-light btn-sm btn-block" href="{{ route('showComments', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
+                    <a class="btn btn-light btn-sm btn-block comment-button" href="{{ route('showComments', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
                 </div>   
-                @else
+                @elseif(Str::startsWith(request()->path(), 'profile'))
                 <div class="card">
-                    <a class="btn btn-light btn-sm btn-block" href="{{ route('showCommentsInProfilePage', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
+                    <a class="btn btn-light btn-sm btn-block comment-button" href="{{ route('showCommentsInProfilePage', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
                 </div>  
                 @endif
             </div>
         </div>  
-
-        @isset($postWithOpenedCommentsId)                                                       
-            @if($postWithOpenedCommentsId == $post->id)
-                @include('partials.comments_list', ['postId' =>$post->id,'userCommentPairs' => $userCommentPairs])
-            @endif
-        @endisset
+        
+        @if(Str::startsWith(request()->path(), 'posts'))
+            @isset($postWithOpenedCommentsId)                                                       
+                @if($postWithOpenedCommentsId == $post->id)
+                    @include('partials.comments_list', ['postId' =>$post->id,'userCommentPairs' => $userCommentPairs])
+                @endif
+            @endisset
+        @else
+        
+        @endif
     </div>
     <br><br>
 @empty
@@ -163,4 +167,5 @@ use Illuminate\Database\Query\Builder;
             });
         });
     });
+
 </script>

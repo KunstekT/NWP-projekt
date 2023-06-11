@@ -103,7 +103,8 @@ class FriendshipsController extends Controller
         $notif->type = "friend_request";
         $notif->save();
 
-        return view('addUsers', ['usersToAdd' => session(('usersToAdd'))]);
+        return redirect()->back();
+        //return view('addUsers', ['usersToAdd' => session(('usersToAdd'))]);
     }
 
     public function acceptFriend($userId, $friendId)
