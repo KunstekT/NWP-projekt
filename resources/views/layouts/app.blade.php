@@ -104,12 +104,16 @@
                                             @if($notification->friend_id == Auth::user()->id)
                                                 @if ($notification->type == "post")
                                                     <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
                                                 @elseif ($notification->type == "comment")
                                                     <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
                                                 @elseif ($notification->type == "likes")
                                                     <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
                                                 @elseif ($notification->type == "friend_request")
                                                     <a class="dropdown-item " href="{{ route('friends', ['userId' => Auth::id()]) }}">@php echo $notification->content @endphp</a>
+                                                    {{ formatTimeAgo($notification->created_at) }}
                                                 @endif
                                             @endif
                                             @empty
