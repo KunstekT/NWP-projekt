@@ -48,6 +48,8 @@ Route::get('/get-messages','App\Http\Controllers\ChatController@getMessages')->n
 Route::get('/friends/{userId}', 'App\Http\Controllers\FriendshipsController@get')->name('friends');
 Route::get('/findFriends/{userId}', 'App\Http\Controllers\FriendshipsController@findFriends')->name('findFriends');
 Route::get('/addFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@addFriend')->name('addFriend');
+Route::get('/acceptFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@acceptFriend')->name('acceptFriend');
+Route::get('/rejectFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@rejectFriend')->name('rejectFriend');
 Route::get('/removeFriend/{userId}/{friendId}', 'App\Http\Controllers\FriendshipsController@removeFriend')->name('removeFriend');
 
 Route::post('/post/create', 'App\Http\Controllers\PostController@create')->name('post.create');
