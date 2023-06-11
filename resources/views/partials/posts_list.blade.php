@@ -1,5 +1,8 @@
 @php
 use App\Models\Post;
+use App\Models\Notification;
+use Illuminate\Database\Query\Builder;
+
     $posts = Post::orderByDesc('created_at')->get();
 
     function formatTimeAgo($dateTime)
@@ -36,16 +39,30 @@ use App\Models\Post;
         
         return false;
     }
+
+    function userIsMentioned($post_id, $friend_id){
+        $foundPostId = false;
+        if(Notification::where('type', 'post')->where('friend_id', $friend_id)->get() == null){
+            return false;
+        }
+        $mentioned_posts_ids = Notification::where('type', 'post')->where('friend_id', $friend_id)->get();
+
+        foreach ($mentioned_posts_ids as $mentioned_posts_id){
+            if($post_id == $mentioned_posts_id->type_id){
+                $foundPostId = true;
+            }
+        }
+        return $foundPostId;
+    }        
 @endphp
 
 <ul class="list-group">
 @forelse($posts as $post)
 @php
         $postOwner = \App\Models\User::find($post->user_id);
-    @endphp
-
-    @isset($profileUser)
-        @if($postOwner->id != $profileUser->id) 
+@endphp
+    @isset($profileUser)        
+        @if($postOwner->id != $profileUser->id && !userIsMentioned($post->id, $profileUser->id))
             @continue
         @endif
     @else
