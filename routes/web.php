@@ -77,3 +77,5 @@ Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updat
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');
 Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileController@uploadProfileImage')->name('profile.uploadProfileImage');
 Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
+
+Route::get('/post/{post}', 'App\Http\Controllers\PostController@showPost')->name('post');
