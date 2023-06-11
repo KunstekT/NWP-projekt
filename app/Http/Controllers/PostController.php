@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 use App\Models\Post;
 use App\Models\Like;
 use App\Models\User;
+use App\Models\Friendship;
 use App\Models\Comment;
 use App\Models\Notification;
 
@@ -45,11 +48,22 @@ class PostController extends Controller
     function getMentions($content)
     {
         $this->emptyOutlastMentionedFriendsIDs();
-        $json = '/users.json';
-        $data = Storage::disk('local')->get($json);
-        $users = json_decode($data, true);
-
+        
         $mention_regex = '/@(\w+)/'; //mention regrex to get all @texts
+
+        $friends_ids_ment = Friendship::where('user_id', Auth::id())->pluck('friend_id');
+        $friends_data_ment =  User::whereIn('id', $friends_ids_ment)->get();
+        $users =[];
+        $users = $friends_data_ment->map(function ($friend) {
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name,
+                'type' => 'friend',
+            ];
+        });
+
+        $jsonUsers = json_encode($users);
+
         
         if (preg_match_all($mention_regex, $content, $matches))
         {
@@ -57,7 +71,7 @@ class PostController extends Controller
             $foundMatches=[];
             foreach ($matches[1] as $match)
             {                
-                foreach($users as $user) {
+                foreach(json_decode($jsonUsers, true) as $user) {
                     if(strtolower($user['name']) == strtolower($match)) {
                         array_push($ids, $user['id']);    
                         array_push($foundMatches, $user['name']);                                      
@@ -66,13 +80,14 @@ class PostController extends Controller
                 
             }
             $counter = -1;
-            foreach ($ids as $id){
+                foreach ($ids as $id){
                 $counter++;
                 $match_replace = '<a target="_blank" href="/profile/' . $id . '">' . $foundMatches[$counter] . '</a> ';
                 $content = preg_replace('/@'. $foundMatches[$counter] .'/', $match_replace, $content, 1);
                 $this->addMentionedFriendID($id);
             }
         }
+
         return $content;  
     }
 
