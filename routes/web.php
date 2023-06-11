@@ -101,3 +101,8 @@ Route::get('/api/get-users', function () {
 Route::any('{url}', function(){
     return redirect('/posts');
 })->where('url', '.*');
+
+
+Route::any('{url}', function(){
+    return redirect('/posts');
+})->where('url', '.*');

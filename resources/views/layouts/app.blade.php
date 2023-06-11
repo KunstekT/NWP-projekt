@@ -170,7 +170,22 @@
             postElement.scrollIntoView({ behavior: 'smooth' });
         }
 
+        function receiveNotifications(receiverId) {
+        axios.get('/receiveNotifications', {
+            params: {
+                receiverId: receiverId,
+            }
+        })
+        .then(response => {
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        }
         
+        receiveNotifications({{$receiverId}});
+        setInterval(receiveNotifications, 4000, {{$receiverId}});
        </script>
     @endsection('script')
 </body>
