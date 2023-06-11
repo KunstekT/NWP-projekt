@@ -103,7 +103,7 @@ class FriendshipsController extends Controller
         $notif->type = "friend_request";
         $notif->save();
 
-        return view('addUsers', ['usersToAdd' => session('usersToAdd')]);
+        
     }
 
     public function acceptFriend($userId, $friendId)
@@ -175,7 +175,14 @@ class FriendshipsController extends Controller
         }
         $filename = 'users.json';
         file_put_contents($filename, json_encode($friendsListJSON));
-
         return Storage::disk('local')->put($filename, json_encode($friendsListJSON)); 
+    }
+
+    public function searchFriends(Request $request)
+    {
+        $query = $request->input('query');
+        $results = User::where('name', 'like', "%$query%")->get();
+        
+        return view('addUsers', compact('results'));
     }
 }

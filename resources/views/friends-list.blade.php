@@ -10,6 +10,7 @@
         $mentionCount = Notification::where('friend_id', $friendId)->where('type', 'friend_request')->count();
         return $mentionCount;
     }
+
 @endphp
 
 @section('content')

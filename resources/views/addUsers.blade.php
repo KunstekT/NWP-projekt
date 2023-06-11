@@ -7,7 +7,6 @@
             <div class="container">
                 <h1>Add to friends</h1>
             </div>
-
             <div class="list-group">
                 @forelse($usersToAdd as $userToAdd)
                     <li class="list-group-item">

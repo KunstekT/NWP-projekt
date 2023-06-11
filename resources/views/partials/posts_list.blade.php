@@ -163,25 +163,4 @@ use Illuminate\Database\Query\Builder;
             });
         });
     });
-
-//     // Select all elements with the class "edit-button"
-//     const editButtons = document.querySelectorAll('.edit-button');
-
-//     // Add a click event listener to each edit button
-//     editButtons.forEach(button => {
-//     button.addEventListener('click', () => {
-//         // Get the post ID from the "data-post-id" attribute
-//         const postId = button.dataset.postId;
-
-//         // Make an Axios request to fetch the edit content for the specific post
-//         axios.get(`/edit/${postId}`)
-//             .then(response => {
-//                 const editHtml = response.data;
-//                 document.getElementById('editContainer').innerHTML = editHtml;
-//             })
-//             .catch(error => {
-//                 console.error(error);
-//             });
-//     });
-// });
 </script>

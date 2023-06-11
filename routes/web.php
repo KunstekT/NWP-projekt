@@ -63,7 +63,8 @@ Route::get('/posts', 'App\Http\Controllers\PostController@posts')->name('posts')
 Route::post('/like', 'App\Http\Controllers\PostController@toggleLike')->name('like');
 Route::post('/posts/{postId}/comment', 'App\Http\Controllers\PostController@postComment')->name('postComment');
 Route::get('/posts/{postId}/showComments', 'App\Http\Controllers\PostController@showComments')->name('showComments');
-Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
+Route::get('/profile/{postId}/showComments', 'App\Http\Controllers\PostController@showCommentsInProfilePage')->name('showCommentsInProfilePage');
+Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\CommentController@delete')->name('comments.delete');
 Route::delete('/posts/{postId}/showComments/{commentId}/delete', 'App\Http\Controllers\PostController@deleteComment')->name('comments.delete');
 Route::delete('/posts/{postId}', 'App\Http\Controllers\PostController@deletePost')->name('posts.delete');
 Route::get('/posts/{postId}/edit', 'App\Http\Controllers\PostController@editPost')->name('posts.edit');
@@ -73,4 +74,3 @@ Route::post('/posts/{postId}/update', 'App\Http\Controllers\PostController@updat
 Route::get('/profile/{userId}', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');
 Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileController@uploadProfileImage')->name('profile.uploadProfileImage');
 Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
-
