@@ -39,10 +39,14 @@ function userIsAFriend($userId) {
                         @endif
                     @endif
                 @endforeach
-
-                <div class="container">
-                    <a href="{{ route('findFriends', ['userId' => Auth::id()]) }}" class="btn btn-primary stretched-link">Find friends!</a>
-                </div> 
+                @if(session('friends') !== null)
+                
+                    @if(count(session('friends'))==0)
+                    <div class="container">
+                        <a href="{{ route('findFriends', ['userId' => Auth::id()]) }}" class="btn btn-primary stretched-link">Find friends!</a>
+                    </div> 
+                    @endif
+                @endif
 
             </div>
         </div>

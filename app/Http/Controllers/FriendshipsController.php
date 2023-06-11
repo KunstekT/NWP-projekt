@@ -103,7 +103,7 @@ class FriendshipsController extends Controller
         $notif->type = "friend_request";
         $notif->save();
 
-        
+        return redirect()->back();
     }
 
     public function acceptFriend($userId, $friendId)

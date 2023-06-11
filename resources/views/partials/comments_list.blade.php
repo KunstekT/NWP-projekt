@@ -32,19 +32,19 @@ deleteCommentButtons.forEach(button => {
 
         const url = `/posts/${postId}/showComments/${commentId}/delete`;
         axios.delete(url)
-                .then(response => {
-                    // Comment successfully deleted
-                    console.log(response.data);        
-                    
-                    const commentElement = document.getElementById(`comment-${commentId}`);
-                    if (commentElement) {
-                        commentElement.remove();
-                    }
-                })
-                .catch(error => {
-                    // Error occurred while deleting the comment
-                    console.error(error);
-                });
+            .then(response => {
+                // Comment successfully deleted
+                console.log(response.data);        
+                
+                const commentElement = document.getElementById(`comment-${commentId}`);
+                if (commentElement) {
+                    commentElement.remove();
+                }
+            })
+            .catch(error => {
+                // Error occurred while deleting the comment
+                console.error(error);
+            });
     });
 });
 
