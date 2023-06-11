@@ -103,11 +103,11 @@
                                         @forelse($notifications as $notification)
                                             @if($notification->friend_id == Auth::user()->id)
                                                 @if ($notification->type == "post")
-                                                    <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
                                                 @elseif ($notification->type == "comment")
-                                                    <a class="dropdown-item" href="{{ route('showComments', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
                                                 @elseif ($notification->type == "likes")
-                                                    <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
                                                 @elseif ($notification->type == "friend_request")
                                                     <a class="dropdown-item " href="{{ route('friends', ['userId' => Auth::id()]) }}">@php echo $notification->content @endphp</a>
                                                 @endif

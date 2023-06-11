@@ -235,6 +235,15 @@ class PostController extends Controller
             }
         }
 
+        $post = Post::findOrFail($postId);
+        $postOwner = User::where('id', $post->user_id)->first();
+        $notif = new Notification();
+        $notif->content = $request->user()->name . " has comment on your post.";
+        $notif->type_id = $postId;
+        $notif->user_id = $comment->user_id;
+        $notif->friend_id = $postOwner->id;
+        $notif->type = "comment";
+        $notif->save();
         return redirect()->back()->with('success', 'Comment posted successfully');
     }
     public function deleteComment($postId, $commentId)
@@ -298,5 +307,10 @@ class PostController extends Controller
 
         $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
         return redirect()->route('posts',['posts' => $posts]);
+    }
+
+    public function showPost($postId){
+        $post = Post::findOrFail($postId);
+        return view('post',['post' => $post]);
     }
 }
