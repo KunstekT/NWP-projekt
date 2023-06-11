@@ -1,9 +1,50 @@
 @extends('layouts.app')
 
+@php
+    use App\Models\Notification;
+    use App\Models\FriendRequest;
+    $friendRequests = FriendRequest::where('friend_id', Auth::user()->id)->orderByDesc('created_at')->get();
+    $notifications = Notification::orderByDesc('created_at')->get();
+
+    function checkFriendRequestCount($friendId){
+        $mentionCount = Notification::where('friend_id', $friendId)->where('type', 'friend_request')->count();
+        return $mentionCount;
+    }
+
+@endphp
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
+            <div>
+                <h1>Friend requests</h1>
+                <div class="list-group">                    
+                        @if(checkFriendRequestCount(Auth::user()->id)==0) 
+                            <p>No friend requests.</p>
+                        @else
+                            <li class="list-group-item">
+                                @forelse($friendRequests as $friendRequest)
+                                    @forelse($notifications as $notification)                                    
+                                        @if($notification->friend_id == Auth::user()->id)
+                                            @if ($notification->type == "friend_request")                                        
+                                                @if($notification->type_id == $friendRequest->id)
+                                                    <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                    <a class="btn btn-primary" href="{{ route('acceptFriend', ['userId' => Auth::id(), 'friendId' =>$notification->user_id ]) }}" title="">Accept</a>
+                                                    <a class="btn btn-danger" href="" title="">Reject</a>
+                                                @endif                                        
+                                            @endif
+                                        @endif    
+                                        @empty
+                                            <p>No friend requests.</p>
+                                    @endforelse
+                                @empty 
+                                    <p>No friend requests.</p>  
+                                @endforelse
+                            </li>
+                        @endif                    
+                </div>
+            </div>
             <div class="container">
                 <h1>Friends List</h1>
             </div>

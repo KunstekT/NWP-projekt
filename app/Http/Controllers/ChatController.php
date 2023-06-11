@@ -100,25 +100,9 @@ class ChatController extends Controller
         return response()->json(['messageListHtml' => $messageListHtml]);
     }
 
-    // public function getMessages($receiverId)
-    // {
-    //   $messages = ChatMessage::where('sender_id', Auth::id())
-    //   ->where('receiver_id', $receiverId)
-    //   ->orWhere(function ($query) use ($receiverId) {
-    //       $query->where('sender_id', $receiverId)
-    //           ->where('receiver_id', Auth::id());
-    //   })->orderBy('created_at', 'asc')->get();
-  
-    //   $messageListHtml = view('partials.message_list', compact('messages', 'receiverId'))->render();
-  
-    //   return response()->json(['messages' => $messageListHtml]);
-    // }
-
     public function getChatWithAUser($receiverId){
         $users = User::all();
         $messages = ChatMessage::all();
-        //$data = ChatMessage::all();// Retrieve the data from the database or other sources
-        // $data = ChatMessage::where('sender_id', $senderId)->where('receiver_id', $receiverId)->get();
 
         $data = ChatMessage::where(function ($query) use ($receiverId) {
             $query->where('sender_id', Auth::id())

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Auth;
 use App\Models\Friendship;
 use App\Models\User;
+use App\Models\Notification;
+use App\Models\FriendRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,12 +86,53 @@ class FriendshipsController extends Controller
             return response()->json(['message' => 'User or friend not found'], 404);
         }
 
-        Friendship::makeFriends($user, $friend);
+        //Friendship::makeFriends($user, $friend);
+        //$this->refreshFriends($userId);
+        //$this->refreshUsersToAdd($userId);
 
+        $friendRequest = new FriendRequest();
+        $friendRequest->user_id = $user->id;
+        $friendRequest->friend_id = $friend->id;
+        $friendRequest->save();
+
+        $notif = new Notification();
+        $notif->content = $user->name . " has sent you a friend request.";
+        $notif->type_id = $friendRequest->id;
+        $notif->user_id = $user->id;
+        $notif->friend_id = $friend->id;
+        $notif->type = "friend_request";
+        $notif->save();
+
+        
+    }
+
+    public function acceptFriend($userId, $friendId)
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+
+        if (!$user || !$friend) {
+            return response()->json(['message' => 'User or friend not found'], 404);
+        }
+
+        Friendship::makeFriends($user, $friend);
         $this->refreshFriends($userId);
         $this->refreshUsersToAdd($userId);
-        // return response()->json(['message' => 'Friend added successfully'], 200);
-        return view('addUsers', ['usersToAdd' => session('usersToAdd')]);
+
+        $friendRequest = FriendRequest::where('friend_id', $userId)->where('user_id', $friendId);
+        $friendRequest->delete();
+
+        return view('friends-list', ['friends' => session('friends')]);
+    }
+
+    public function rejectFriend($userId, $friendId)
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+        $friendRequest = FriendRequest::where('friend_id', $userId)->where('user_id', $friendId);
+        $friendRequest->delete();   
+
+        return view('friends-list', ['friends' => session('friends')]);
     }
 
     public function removeFriend($userId, $friendId)
@@ -132,7 +175,14 @@ class FriendshipsController extends Controller
         }
         $filename = 'users.json';
         file_put_contents($filename, json_encode($friendsListJSON));
-
         return Storage::disk('local')->put($filename, json_encode($friendsListJSON)); 
+    }
+
+    public function searchFriends(Request $request)
+    {
+        $query = $request->input('query');
+        $results = User::where('name', 'like', "%$query%")->get();
+        
+        return view('addUsers', compact('results'));
     }
 }

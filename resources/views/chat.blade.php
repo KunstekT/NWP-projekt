@@ -40,9 +40,9 @@ function userIsAFriend($userId) {
                     @endif
                 @endforeach
 
-                <!-- <div class="container">
+                <div class="container">
                     <a href="{{ route('findFriends', ['userId' => Auth::id()]) }}" class="btn btn-primary stretched-link">Find friends!</a>
-                </div> -->
+                </div> 
 
             </div>
         </div>
@@ -95,13 +95,6 @@ function userIsAFriend($userId) {
 
             @if(isset($receiverId))
                 @if($receiverId >= 0)
-                <!-- <form method="POST" action="{{ route('send.message',  ['receiverId' => $receiverId]) }}">
-                    @csrf
-                    <input type="hidden" name="receiverId" value="{{$receiverId}}">
-                    <input type="text"class="form-control" name="message" id="message-input" placeholder="Enter your message">
-                    <button id="sendButton" type="submit" class="btn btn-primary">Send</button>
-                </form> -->
-
                 <input type="hidden" name="receiverId" value="{{$receiverId}}">
                 <input type="text"class="form-control" name="message" id="message-input" placeholder="Enter your message">
                 <button id="sendButton" type="submit" class="btn btn-primary">Send</button>
@@ -168,11 +161,6 @@ function receiveMessages(receiverId) {
 
     var container = document.getElementById('scrolldiv');
     container.scrollTop = container.scrollHeight;
-    // if (messages.length > 0) {
-    //   console.log('Received messages:', messages);
-    //   // Update UI with received messages
-
-    // }
     })
   .catch(error => {
     // Handle error
@@ -191,47 +179,6 @@ function receiveMessages(receiverId) {
   // Call receiveMessages initially and then periodically
   receiveMessages({{$receiverId}});
   setInterval(receiveMessages, 1000, {{$receiverId}});
-
-// sendButton.addEventListener('click', function() {
-//     // Get the message content from the text input field
-//     const message = document.getElementById('message-input').value;
-//     const receiver_id = ?php echo $receiverId; ?>;
-    
-//     axios.post('/send', {
-//         message: message,
-//         receiver_id: receiver_id
-//     })
-//     .then(function(response) {
-
-//         var updatedMessagesList = response.data.messageListHtml;
-//         // console.log(updatedMessagesList);
-//         var chatDisplay = document.getElementById('chatDisplay');
-
-//         chatDisplay.innerHTML = '';
-//         chatDisplay.innerHTML = updatedMessagesList;
-
-//         document.getElementById('message-input').value = '';
-//     })
-//     .catch(function(error) {
-//         console.error(error);
-//     });
-// });
-
-// window.Echo.channel('chat')
-//     .listen('.message.created', (event) => {
-//         // Update the UI with the received message
-//         const message = event.message;
-//         const userId = event.user_id;
-//         // Update the UI to show the new message from the user with the given ID
-//     });
-
-//     Echo.private('chat.' + receiverId)
-//     .listen('MessageCreated', (event) => {
-//         console.log("MessageCreated!!");
-//         // Update the chat display with the new message
-//         // event.message contains the new message data
-//     });
-
 
 </script>
 @endsection

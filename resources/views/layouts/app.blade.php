@@ -1,6 +1,11 @@
 @php
     use App\Models\Notification;
     $notifications = Notification::orderByDesc('created_at')->get();
+
+    function checkMentionCount($friendId){
+        $mentionCount = Notification::where('friend_id', $friendId)->count();
+        return $mentionCount;
+    }
 @endphp
 
 <!doctype html>
@@ -92,17 +97,25 @@
                                     <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    @forelse($notifications as $notification)
-                                        @if($notification->friend_id == Auth::user()->id)
-                                            @if ($notification->type == "post")
-                                                <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
-                                            @else
-                                                <a class="dropdown-item" href="{{ route('showComments', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                    @if(checkMentionCount(Auth::user()->id)==0) 
+                                        <p>No notifications!</p>
+                                    @else
+                                        @forelse($notifications as $notification)
+                                            @if($notification->friend_id == Auth::user()->id)
+                                                @if ($notification->type == "post")
+                                                    <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                @elseif ($notification->type == "comment")
+                                                    <a class="dropdown-item" href="{{ route('showComments', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                @elseif ($notification->type == "likes")
+                                                    <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                                                @elseif ($notification->type == "friend_request")
+                                                    <a class="dropdown-item " href="{{ route('friends', ['userId' => Auth::id()]) }}">@php echo $notification->content @endphp</a>
+                                                @endif
                                             @endif
-                                        @endif
-                                        @empty
-                                            <p>No notifications!</p>
-                                    @endforelse
+                                            @empty
+                                                <p>No notifications!</p>
+                                        @endforelse
+                                    @endif
                                 </div>
                             </li>
                             <li class="nav-item dropdown">

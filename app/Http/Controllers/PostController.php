@@ -141,6 +141,15 @@ class PostController extends Controller
                 'user_id' => $user->id,
                 'post_id' => $postId,
             ]);
+            if($user->id != $post->user_id){
+                $notif = new Notification();
+                $notif->content = $user->name . " has liked your post.";
+                $notif->type_id = $post->id;
+                $notif->user_id = $user->id;
+                $notif->friend_id = $post->user_id;
+                $notif->type = "likes";
+                $notif->save();
+            }          
             $liked = true;
         }
                 
