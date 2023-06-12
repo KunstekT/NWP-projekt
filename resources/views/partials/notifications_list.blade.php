@@ -13,14 +13,30 @@
 @else
     @forelse($notifications as $notification)
         @if($notification->friend_id == Auth::user()->id)
-            @if ($notification->type == "post")
+            @php
+                $exists = App\Models\Post::where('id', $notification->type_id)->exists();
+            @endphp
+            @if ($notification->type == "post" && $exists)                                                
                 <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
-            @elseif ($notification->type == "comment")
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
+            @elseif ($notification->type == "post" && !$exists)    
+                <a class="dropdown-item" href="{{ route('posts', ['posts' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
+            @elseif ($notification->type == "comment" && $exists)
                 <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
-            @elseif ($notification->type == "likes")
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
+            @elseif ($notification->type == "comment" && !$exists)    
+                <a class="dropdown-item" href="{{ route('posts', ['posts' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
+            @elseif ($notification->type == "likes" && $exists)
                 <a class="dropdown-item" href="{{ route('post', ['post' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
+                @elseif ($notification->type == "likes" && !$exists)    
+                <a class="dropdown-item" href="{{ route('posts', ['posts' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
             @elseif ($notification->type == "friend_request")
                 <a class="dropdown-item " href="{{ route('friends', ['userId' => Auth::id()]) }}">@php echo $notification->content @endphp</a>
+                <p class="right-align">{{ formatTimeAgo($notification->created_at) }}</p>
             @endif
         @endif
         @empty

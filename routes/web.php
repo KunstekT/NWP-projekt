@@ -97,6 +97,8 @@ Route::get('/api/get-users', function () {
     });
     return response()->json($friends_ment_all);
 });
+
+
 Route::any('{url}', function(){
     return redirect('/posts');
 })->where('url', '.*');
