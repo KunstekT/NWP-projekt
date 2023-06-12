@@ -172,6 +172,7 @@ function receiveMessages(receiverId) {
   });
 }
 
+
   // Event handler for send button click
   document.getElementById('sendButton').addEventListener('click', function () {
     const messageInput = document.getElementById('message-input');

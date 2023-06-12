@@ -82,6 +82,7 @@ Route::post('/profile/uploadProfileImage', 'App\Http\Controllers\ProfileControll
 Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@updateAbout')->name('updateAbout');
 
 Route::get('/post/{post}', 'App\Http\Controllers\PostController@showPost')->name('post');
+Route::get('/receiveNotifications/{receiverId}', 'App\Http\Controllers\NotificationController@receiveNotifications')->name('receiveNotifications');
 
 Route::any('{url}', function(){
     return redirect('/posts');

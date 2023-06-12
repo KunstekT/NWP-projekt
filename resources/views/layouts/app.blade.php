@@ -1,4 +1,5 @@
 @php
+
     use App\Models\Notification;
     $notifications = Notification::orderByDesc('created_at')->get();
 
@@ -7,7 +8,6 @@
         return $mentionCount;
     }
 @endphp
-
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -28,6 +28,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -96,7 +97,7 @@
                                 <button class="dropdown-toggle notif-button" data-bs-toggle="dropdown">
                                     <img class="nav-icon" src="{{ asset('storage/profile_images/notification_icon.png') }}" alt="Notifications"></img>
                                 </button>
-                                <div class="dropdown-menu dropdown-menu-end">
+                                <div class="dropdown-menu dropdown-menu-end" id="dropdown-menu">
                                     @if(checkMentionCount(Auth::user()->id)==0) 
                                         <p>No notifications!</p>
                                     @else
@@ -147,7 +148,7 @@
             @yield('script')
         </main>
     </div>
-    @section('script')
+
     <script>
         function scrollToPost(postId) {
             const postElement = document.getElementById('postId');;
@@ -155,22 +156,26 @@
         }
 
         function receiveNotifications(receiverId) {
-        axios.get('/receiveNotifications', {
-            params: {
-                receiverId: receiverId,
-            }
-        })
-        .then(response => {
+            axios.get('/receiveNotifications/{receiverId}', {
+                params: {
+                    receiverId: receiverId,
+                }
+            })
+            .then(response => {
+                x = response.data.notificationsHtml;
+                console.log("Received notifications! "+x);
 
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+                var dropdownMenu = document.getElementById('dropdown-menu');
+                dropdownMenu.innerHTML = '';
+                dropdownMenu.innerHTML = x;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
-        
-        receiveNotifications({{$receiverId}});
-        setInterval(receiveNotifications, 4000, {{$receiverId}});
+            
+            receiveNotifications({{Auth::id()}});
+            setInterval(receiveNotifications, 2000, {{Auth::id()}});
        </script>
-    @endsection('script')
 </body>
 </html>
