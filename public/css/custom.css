@@ -26,6 +26,10 @@ a.nav-link.active {
     display: none;
 }
 
+.right-align {
+  text-align: right;
+}
+
 .mentions-input-box {
     position: relative;
     background: #fff;

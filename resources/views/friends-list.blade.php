@@ -11,6 +11,24 @@
         return $mentionCount;
     }
 
+    function formatTimeAgo($dateTime)
+    {
+        $now = now();
+        $diff = $dateTime->diffInSeconds($now);
+
+        if ($diff < 60) {
+            return $diff . ' seconds ago';
+        } elseif ($diff < 3600) {
+            $minutes = floor($diff / 60);
+            return $minutes . ' minutes ago';
+        } elseif ($diff < 86400) {
+            $hours = floor($diff / 3600);
+            return $hours . ' hours ago';
+        } else {
+            $days = floor($diff / 86400);
+            return $days . ' days ago';
+        }
+    }
 @endphp
 
 @section('content')
@@ -31,7 +49,7 @@
                                                 @if($notification->type_id == $friendRequest->id)
                                                     <a class="dropdown-item" href="{{ route('posts', ['postId' => $notification->type_id]) }}">@php echo $notification->content @endphp</a>
                                                     <a class="btn btn-primary" href="{{ route('acceptFriend', ['userId' => Auth::id(), 'friendId' =>$notification->user_id ]) }}" title="">Accept</a>
-                                                    <a class="btn btn-danger" href="" title="">Reject</a>
+                                                    <a class="btn btn-danger" href="{{ route('rejectFriend', ['userId' => Auth::id(), 'friendId' =>$notification->user_id ]) }}" title="">Reject</a>
                                                 @endif                                        
                                             @endif
                                         @endif    

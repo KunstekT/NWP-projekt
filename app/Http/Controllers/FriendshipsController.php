@@ -127,8 +127,6 @@ class FriendshipsController extends Controller
 
     public function rejectFriend($userId, $friendId)
     {
-        $user = User::find($userId);
-        $friend = User::find($friendId);
         $friendRequest = FriendRequest::where('friend_id', $userId)->where('user_id', $friendId);
         $friendRequest->delete();   
 
@@ -164,17 +162,14 @@ class FriendshipsController extends Controller
                 }
             }
         }
-        $friendsJSON = array();
         $friendsListJSON = array();
         foreach($friends as $key => $val)
         {
             $friendsListJSON[$key]['id'] = $val['id'];
             $friendsListJSON[$key]['name'] = $val['name'];
-            $friendsListJSON[$key]['type'] = 'friend';
-            
+            $friendsListJSON[$key]['type'] = 'friend';            
         }
         $filename = 'users.json';
-        file_put_contents($filename, json_encode($friendsListJSON));
         return Storage::disk('local')->put($filename, json_encode($friendsListJSON)); 
     }
 

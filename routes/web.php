@@ -19,6 +19,8 @@ use app\Http\Controllers\Auth\LogoutController;
 use app\Http\Controllers\FriendshipsController;
 use app\Http\Controllers\ChatController;
 use app\Http\Controllers\PostController;
+use App\Models\Friendship;
+use App\Models\User;
 
 Route::get('/', function () {
     return view('home');
@@ -83,7 +85,18 @@ Route::post('/profile/updateAbout', 'App\Http\Controllers\ProfileController@upda
 
 Route::get('/post/{post}', 'App\Http\Controllers\PostController@showPost')->name('post');
 Route::get('/receiveNotifications/{receiverId}', 'App\Http\Controllers\NotificationController@receiveNotifications')->name('receiveNotifications');
-
+Route::get('/api/get-users', function () {
+    $friends_ids_ment = Friendship::where('user_id', auth()->id())->pluck('friend_id');
+    $friends_data_ment = User::whereIn('id', $friends_ids_ment)->get();
+    $friends_ment_all = $friends_data_ment->map(function ($friend) {
+        return [
+            'id' => $friend->id,
+            'name' => $friend->name,
+            'type' => 'friend',
+        ];
+    });
+    return response()->json($friends_ment_all);
+});
 Route::any('{url}', function(){
     return redirect('/posts');
 })->where('url', '.*');
