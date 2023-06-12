@@ -179,7 +179,6 @@
             })
             .then(response => {
                 x = response.data.notificationsHtml;
-                console.log("Received notifications! "+x);
 
                 var dropdownMenu = document.getElementById('dropdown-menu');
                 dropdownMenu.innerHTML = '';

@@ -99,7 +99,7 @@ use Illuminate\Database\Query\Builder;
                 </div>   
                 @elseif(Str::startsWith(request()->path(), 'profile'))
                 <div class="card">
-                    <a class="btn btn-light btn-sm btn-block comment-button" href="{{ route('showCommentsInProfilePage', ['postId' => $post->id]) }}" style="width:100%">Comment</a>
+                    <a class="btn btn-light btn-sm btn-block comment-button" href="{{ route('post', ['post' => $post]) }}" style="width:100%">Comment</a>
                 </div>  
                 @endif
             </div>
